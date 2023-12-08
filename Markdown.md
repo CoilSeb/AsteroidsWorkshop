@@ -1,5 +1,5 @@
-# Day 1
-# Install Godot 4.2
+# Week 1
+# Install Godot 
 * [Download](https://godotengine.org/download) Latest Download of Godot
 
 # Starting the Project
@@ -90,4 +90,17 @@ func _on_exit_pressed():
 * Create your polygon2D by adding points around the player sprite
 
 
-# Day 2
+# Week 2
+* Create the player
+* Create the player movement and shooting mechanics
+* Create the bullet node and script
+
+# Week 3
+* Create the UI 
+* Create the global script
+
+# Week 4
+* Create the asteroids
+* Create the asteroid movement and spawning mechanics
+* Create the game over script
+* Create the save and load script
