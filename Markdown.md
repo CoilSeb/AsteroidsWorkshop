@@ -1,14 +1,14 @@
 # Week 1
-# Install Godot 
+## Install Godot 
 * [Download](https://godotengine.org/download) Latest Download of Godot
 
-# Starting the Project
+## Starting the Project
 * Open Godot
 * Click on New 
 * Select the folder you want to save the project in and name the project.
 * Click on Create and Edit 
 
-# Editing the Project Settings 
+## Editing the Project Settings 
 * Click on `Project`
 * Click on `Project Settings`
 * Click on `Window`
@@ -17,7 +17,7 @@
 * Click on `Textures`
 * Change the Default Texture Filter to `Nearest`
 
-# Creating the Start Screen 
+## Creating the Start Screen 
 * Click on `2D Scene`
 * Name the scene `Start_Screen`
 * Save the scene
@@ -88,12 +88,29 @@ func _on_exit_pressed():
 * Drag `icon.svg` into the `Texture` section of the `Sprite2D` node
 * Add a `CollisionPolygon2D` node as a child node to the `Player` node
 * Create your polygon2D by adding points around the player sprite
+* Add a `Timer` node as a child node to the `Player` node and name it `Shoot_Timer`
 
 
 # Week 2
-* Create the player
-* Create the player movement and shooting mechanics
-* Create the bullet node and script
+## Creating the Player Script
+* Right-Click on the `Player` node and click on `Attach Script`
+* Click `Create`
+* Delete all the code in the `-physics_process(delta)` function
+* Delete all the variables above this script too.
+* The script should be essentially empty now.
+* Add these variables to the top of the script
+```
+@onready var shoot_timer = $Shoot_Timer
+@onready var immunity_Timer = $Immunity_Timer
+var screen_size
+var thrust = 50 
+var maxSpeed = 10
+var rotateSpeed = 5
+```
+
+
+## Create the player movement and shooting mechanics
+## Create the bullet node and script
 
 # Week 3
 * Create the UI 
