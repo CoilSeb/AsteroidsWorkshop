@@ -26,7 +26,8 @@ window/stretch/mode="viewport"
 folder_colors={
 "res://Global/": "green",
 "res://Scenes/": "red",
-"res://Scenes/Start_Screen/": "red"
+"res://Scenes/Start_Screen/": "red",
+"res://Sprites/": "blue"
 }
 
 [input]

@@ -85,13 +85,15 @@ func _on_exit_pressed():
 ```
 * Make sure to save often with `Ctrl + S`!!!
 
+
+# Session 2
 ## Creating the Player 
 * Click on the `+` button at the top to add a new scene
 * Click on `Other Node` and search for `CharacterBody2D` and click on it and the `Create` button
 * Rename the `CharacterBody2D` node to `Player`
 * Click on the `Player` node in the scene
 * Add a `Sprite2D` node as a child node to the `Player` node
-* Drag your image, in this case we are using`icon.svg`, into the `Texture` section of the `Sprite2D` node
+* Drag your image that you will use for your player into the `Texture` section of the `Sprite2D` node
 * Add a `CollisionPolygon2D` node as a child node to the `Player` node
 * Create your polygon2D by adding points around the player sprite
 * Add an `Area2D` node as a child node to the `Player` node
@@ -102,11 +104,7 @@ func _on_exit_pressed():
 * Click on the `Transform` tab underneath the `Node2D` tab
 * Click on the chain icon next to the `Scale` section to unlock the `X` and `Y` values
 * Set the `Scale` to `0.25` for `X` and `0.35` for `Y`
-* Relock the `Scale` by clicking on the chain icon again
-
-
-# Session 2
-## Creating the Player Script
+* Relock the `Scale` by clicking on the chain icon again## Creating the Player Script
 * Right-Click on the `Player` node and click on `Attach Script`
 * Click `Create`
 * Delete all the code in the `-physics_process(delta)` function
@@ -118,6 +116,7 @@ func _on_exit_pressed():
 var screen_size
 var thrust = 50 
 var rotateSpeed = 5
+var slowDown = 1
 ```
 
 ## Create the player movement and shooting mechanics
@@ -144,15 +143,46 @@ if Input.is_action_pressed("thrust"):
     
 move_and_collide(velocity * delta)
 ```
+* Next we will add the code for slowing down and stopping our player
+* Add the following code to the `_physics_process(delta)` function above the `move_and_collide()` function
 
-## Create the bullet node and script
+```
+else:
+    velocity = lerp(velocity, Vector2.ZERO, slowDown * delta)
+    if velocity.y >= -1 && velocity.y <= 1:
+        velocity.y = 0
+```
+* Now we will add the code for screen wrapping
+* First we have to get the size of our screen
+* Create the ready function by typing `func _ready():` above your `_physics_process(delta)` function and underneath the variables
+* Add the following code to the `_ready()` function
+```
+screen_size = get_viewport_rect().size
+```
+* Add the following code directly underneath the `_physics_process(delta)` function above the input code
+```
+if position.x < 0:
+    position.x = screen_size.x
+if position.x > screen_size.x:
+    position.x = 0
+if position.y < 0:
+    position.y = screen_size.y
+if position.y > screen_size.y:
+    position.y = 0
+```
 
-# Session 3
-* Create the UI 
-* Create the global script
 
-# Session 4
-* Create the asteroids
-* Create the asteroid movement and spawning mechanics
-* Create the game over script
-* Create the save and load script
+# Session 3 * Create asteroids and spawning
+## Creating the Asteroids
+* Click on the `+` button at the top to add a new scene
+* Click on `Other Node` and search for `Area2D` and click on it and the `Create` button
+* Rename the `Area2D` node to `Small_asteroid`
+
+
+# Session 4 * Shooting and scoring
+
+
+# Session 5 * Game over and restart (game saves)
+
+
+# Session 6 * Final touch ups and exports
