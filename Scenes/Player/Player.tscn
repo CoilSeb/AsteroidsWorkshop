@@ -1,23 +1,30 @@
 [gd_scene load_steps=3 format=3 uid="uid://c0lptktcfc4ta"]
 
 [ext_resource type="Script" path="res://Scenes/Player/Player.gd" id="1_enk4v"]
-[ext_resource type="Texture2D" uid="uid://cp86p70hx5vkx" path="res://icon.svg" id="2_hiy5o"]
+[ext_resource type="Texture2D" uid="uid://cy2p3man040cg" path="res://Sprites/Player-1.png.png" id="2_lhwgc"]
 
 [node name="Player" type="CharacterBody2D"]
+scale = Vector2(0.25, 0.35)
 script = ExtResource("1_enk4v")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
-texture = ExtResource("2_hiy5o")
+texture = ExtResource("2_lhwgc")
 
 [node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="."]
 position = Vector2(0, -6.87392)
 scale = Vector2(1, 0.934783)
 build_mode = 1
-polygon = PackedVector2Array(64, 6.28372, 64, -48.2744, 48, -60.0419, 1, -60.0419, -54, -60.0419, -64, -48.2744, -64, 8.42326, -64, 57.6326, -52, 75.8186, 1, 75.8186, 55, 75.8186, 63, 64.0512)
+polygon = PackedVector2Array(0, -60.0418, -64, 75.8186, 0, 42.6558, 64, 75.8186)
 
 [node name="ShootTimer" type="Timer" parent="."]
 wait_time = 0.35
 one_shot = true
 autostart = true
 
-[node name="Immunity_Timer" type="Timer" parent="."]
+[node name="Area2D" type="Area2D" parent="."]
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="Area2D"]
+position = Vector2(0, -6.87392)
+scale = Vector2(1, 0.934783)
+build_mode = 1
+polygon = PackedVector2Array(0, -60.0418, -64, 75.8186, 0, 42.6558, 64, 75.8186)
