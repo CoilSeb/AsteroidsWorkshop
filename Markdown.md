@@ -173,10 +173,146 @@ if position.y > screen_size.y:
 
 
 # Session 3 * Create asteroids and spawning
-## Creating the Asteroids
+## Creating the Small Asteroid
 * Click on the `+` button at the top to add a new scene
 * Click on `Other Node` and search for `Area2D` and click on it and the `Create` button
-* Rename the `Area2D` node to `Small_asteroid`
+* Rename the `Area2D` node to `Small_Asteroid`
+* Now we need to give it a sprite and a collision shape like we did with the player
+* Add a `Sprite2D` node as a child node to the `Small_Asteroid` node
+* Drag your image that you will use for your asteroid into the `Texture` section of the `Sprite2D` node
+* Add a `CollisionPolygon2D` node as a child node to the `Small_Asteroid` node
+* Create your polygon2D by adding points around the asteroid sprite
+* Save this with `Ctrl + S` and name it `Small_Asteroid.tscn`
+* Click on the `Small Asteroid` node in the scene, right click on it, and click on `Attach Script`
+* Click `Create`    
+* Start off by making a few variables at the top of the script
+```
+var screen_size
+var speed
+var rotation_speed
+var direction
+```
+* Now we will add the code to the `_ready()` function
+```
+screen_size = get_viewport_rect().size
+```
+* We will go ahead and implement the screen wrapping code for the asteroids
+* Add the following code to the `_physics_process(delta)` function
+```
+# Screen Wrap
+if position.x < 0:
+    position.x = screen_size.x
+if position.x > screen_size.x:
+    position.x = 0
+if position.y < 0:
+    position.y = screen_size.y
+if position.y > screen_size.y:
+    position.y = 0
+
+# Moving 
+position += direction * speed * delta
+rotation += rotation_speed * delta
+```
+* Now we need to make it move in a random direction upon spawning
+* We will do this by writing a new function called `set_direction_and_speed()`
+* Add the following code to the `set_direction_and_speed()` function
+```
+var angle = randf_range(0, 2 * PI)  # Random angle in radians
+direction = Vector2(cos(angle), sin(angle))  # Convert angle to direction vector
+speed = randf_range(75, 200)  # Random speed between 75 and 200
+rotation_speed = randf_range(0.1, 1)  # Random rotation speed between 0.1 and 1
+```
+* Now we will call this function in the `_ready()` function
+* Add the following code to the `_ready()` function
+```
+set_direction_and_speed()
+```
+* We will also go ahead and make our custom destroy function
+* Create the destroy function and add the following code to it
+```
+queue_free()
+```
+* To test this we can add a couple of lines of code to `process(delta)` function
+```
+if Input.is_action_just_pressed("shoot"):
+    destroy()
+```
+* Add a `Small_Asteroid` node as a child node to the `Game` node to test it out
+* We should see that pressing the `Space` key will destroy the asteroid
+
+## Creating the Medium Asteroid
+* We will follow the same steps as we did for the small asteroid
+* Click on the `+` button at the top to add a new scene
+* Click on `Other Node` and search for `Area2D` and click on it and the `Create` button
+* Rename the `Area2D` node to `Medium_Asteroid`
+* Now we need to give it a sprite and a collision shape like we did with the player
+* Add a `Sprite2D` node as a child node to the `Medium_Asteroid` node
+* Drag your image that you will use for your asteroid into the `Texture` section of the `Sprite2D` node
+* Add a `CollisionPolygon2D` node as a child node to the `Medium_Asteroid` node
+* Create your polygon2D by adding points around the asteroid sprite
+* Save this with `Ctrl + S` and name it `Medium_Asteroid.tscn`
+* Click on the `Medium Asteroid` node in the scene, right click on it, and click on `Attach Script`
+* Click `Create`
+* We will copy and paste the code from the `Small_Asteroid` script into the `Medium_Asteroid` script (To do this easily, click on the `Small_Asteroid` script, press `Ctrl + A` to select all the code we want to copy, press `Ctrl + C` to copy the code, click on the `Medium_Asteroid` script, press `Ctrl+A` to select all the code we want to replace, and press `Ctrl + V` to paste the code)
+* Now we will add a new variable to the top of the script
+```
+const SMALL_ASTEROID = preload("") 
+```
+* You will need to put the path to the `Small_Asteroid.tscn` file in the `preload()` function inbetween the quotation marks
+* For example, if your `Small_Asteroid.tscn` file is in the `Scenes` folder, you would put `preload("res://Scenes/Small_Asteroid.tscn")`
+* Each additional folder you have to go through to get to the file will need to be added to the path with a `/` inbetween each folder
+* If it isn't in any folders, you can just put `preload("res://Small_Asteroid.tscn")`
+* An easy way to do this is to drag the file from the `FileSystem` tab into the script and hold `Ctrl` while you let go of the mouse button
+* Next we will create a new function called `spawn_small_asteroids()` that will be called when we destroy the medium asteroid
+* Add the following code to the `spawn_small_asteroids()` function
+```
+# Instantate two small asteroids
+var small_asteroid1 = SMALL_ASTEROID.instantiate()
+var small_asteroid2 = SMALL_ASTEROID.instantiate()
+
+# Set their positions to the position of the medium asteroid
+small_asteroid1.position = self.position
+small_asteroid2.position = self.position
+
+# Add them as children of the medium asteroid's parent
+self.get_parent().add_child(small_asteroid1)
+self.get_parent().add_child(small_asteroid2)
+
+# Queue the medium asteroid for deletion
+self.queue_free()
+```
+* Now we will call this function in the `destroy()` function
+* Replace `queue_free()` in the `destroy()` function
+```
+spawn_small_asteroids()
+```
+* Now add a `Medium_Asteroid` node as a child node to the `Game` node to test it out
+* We should see that pressing the `Space` key will destroy the asteroid and spawn two small asteroids in its place
+
+## Creating the Large Asteroid
+* We will follow the same steps as we did for the small and medium asteroid
+* Click on the `+` button at the top to add a new scene
+* Click on `Other Node` and search for `Area2D` and click on it and the `Create` button
+* Rename the `Area2D` node to `Large_Asteroid`
+* Now we need to give it a sprite and a collision shape like we did with the player
+* Add a `Sprite2D` node as a child node to the `Large_Asteroid` node
+* Drag your image that you will use for your asteroid into the `Texture` section of the `Sprite2D` node
+* Add a `CollisionPolygon2D` node as a child node to the `Large_Asteroid` node
+* Create your polygon2D by adding points around the asteroid sprite
+* Save this with `Ctrl + S` and name it `Large_Asteroid.tscn`
+* Click on the `Large Asteroid` node in the scene, right click on it, and click on `Attach Script`
+* Click `Create`
+* Copy and paste the code from the `Medium_Asteroid` script into the `Large_Asteroid` script (See medium asteroid section for how to do this if you forgot how)
+* Now we will change some variables around
+* Instead of `const SMALL_ASTEROID = preload("")` we will change it to `const MEDIUM_ASTEROID = preload("")`
+* Then we need to change the name and our variables in the `spawn_small_asteroids()` function
+* Change the name of the function to `spawn_medium_asteroids()`
+* Change the variable names from `small_asteroid1` and `small_asteroid2` to `medium_asteroid1` and `medium_asteroid2`
+* Change the variable names from `SMALL_ASTEROID.instantiate()` to `MEDIUM_ASTEROID.instantiate()`
+* Throw in a large asteroid into the `Game` scene to test it out
+* We should see that pressing the `Space` key will destroy the asteroid and spawn two medium asteroids in its place
+
+## Creating the Asteroid Spawner
 
 
 # Session 4 * Shooting and scoring
