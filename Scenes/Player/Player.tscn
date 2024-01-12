@@ -5,6 +5,7 @@
 
 [node name="Player" type="CharacterBody2D"]
 scale = Vector2(0.25, 0.35)
+collision_mask = 4
 script = ExtResource("1_enk4v")
 metadata/_edit_group_ = true
 

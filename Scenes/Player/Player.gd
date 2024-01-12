@@ -1,6 +1,8 @@
 extends CharacterBody2D
 
-@onready var shoot_Timer = $ShootTimer
+@onready var shoot_timer = $ShootTimer
+
+const BULLET = preload("res://Scenes/Bullet/Bullet.tscn")
 var screen_size
 var thrust = 500
 var maxSpeed = 10
@@ -34,3 +36,10 @@ func _physics_process(delta):
 			velocity.y = 0
 			
 	move_and_collide(velocity * delta)
+	
+	if Input.is_action_pressed("shoot") && shoot_timer.time_left == 0:  # Use action_just_pressed to prevent multiple bullets on a single press
+		var bulletInstance = BULLET.instantiate()  # Create a new instance of the Bullet scene
+		get_parent().add_child(bulletInstance)  # Add it to the player node or a designated parent node for bullets
+		bulletInstance.global_position = global_position  # Set the bullet's position
+		bulletInstance.direction = Vector2.UP.rotated(rotation)  # Set the bullet's direction
+		shoot_timer.start(0.35)

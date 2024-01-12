@@ -13,8 +13,6 @@ func _ready():
 
 
 func _process(delta):
-	if Input.is_action_just_pressed("shoot"):
-		destroy()
 	# Screen Wrap
 	if position.x < 0:
 		position.x = screen_size.x
@@ -34,14 +32,14 @@ func set_direction_and_speed():
 	var angle = randf_range(0, 2 * PI)  # Random angle in radians
 	direction = Vector2(cos(angle), sin(angle))  # Convert angle to direction vector
 	speed = randf_range(75, 200)  # Random speed between 75 and 200
-	rotation_speed = randf_range(0.1, 1)
+	rotation_speed = randf_range(-1, 1)
 
 
 func destroy():
-	spawn_small_asteroids()
+	call_deferred("create_and_add_asteroids")
 
 
-func spawn_small_asteroids():
+func create_and_add_asteroids():
 	# Instantate two small asteroids
 	var medium_asteroid1 = MEDIUM_ASTEROID.instantiate()
 	var medium_asteroid2 = MEDIUM_ASTEROID.instantiate()

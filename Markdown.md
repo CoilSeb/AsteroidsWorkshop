@@ -1,4 +1,4 @@
-# Session 1
+# Session 1  * Getting Godot and the project set up/creating the start screen
 ## Install Godot 
 * [Download](https://godotengine.org/download) Latest Download of Godot
 
@@ -76,17 +76,17 @@
 * Add the following code to the `_on_start_game_pressed()` function
 ```gdscript
 func _on_start_game_pressed():
-    get_tree().change_scene_to_file("res://Scenes/Game/Game.tscn")
+	get_tree().change_scene_to_file("res://Scenes/Game/Game.tscn")
 ```
 * Add the following code to the `_on_exit_pressed()` function
 ```gdscript
 func _on_exit_pressed():
-    get_tree().quit()
+	get_tree().quit()
 ```
 * Make sure to save often with `Ctrl + S`!!!
 
 
-# Session 2
+# Session 2  * Creating the player and player movement
 ## Creating the Player 
 * Click on the `+` button at the top to add a new scene
 * Click on `Other Node` and search for `CharacterBody2D` and click on it and the `Create` button
@@ -131,16 +131,16 @@ var slowDown = 1
 * Add the following code to the `_physics_process(delta)` function
 ```
 if Input.is_action_pressed("rotate_left"):
-    rotation += -1 * rotateSpeed * delta
+	rotation += -1 * rotateSpeed * delta
 if Input.is_action_pressed("rotate_right"):
-    rotation += 1 * rotateSpeed * delta
+	rotation += 1 * rotateSpeed * delta
 ```
 * Now to add the thrust
 * Add the following code to the `_physics_process(delta)` function
 ```
 if Input.is_action_pressed("thrust"):
-    velocity += ((Vector2(0, -1) * thrust * delta).rotated(rotation))
-    
+	velocity += ((Vector2(0, -1) * thrust * delta).rotated(rotation))
+	
 move_and_collide(velocity * delta)
 ```
 * Next we will add the code for slowing down and stopping our player
@@ -148,9 +148,9 @@ move_and_collide(velocity * delta)
 
 ```
 else:
-    velocity = lerp(velocity, Vector2.ZERO, slowDown * delta)
-    if velocity.y >= -1 && velocity.y <= 1:
-        velocity.y = 0
+	velocity = lerp(velocity, Vector2.ZERO, slowDown * delta)
+	if velocity.y >= -1 && velocity.y <= 1:
+		velocity.y = 0
 ```
 * Now we will add the code for screen wrapping
 * First we have to get the size of our screen
@@ -162,17 +162,17 @@ screen_size = get_viewport_rect().size
 * Add the following code directly underneath the `_physics_process(delta)` function above the input code
 ```
 if position.x < 0:
-    position.x = screen_size.x
+	position.x = screen_size.x
 if position.x > screen_size.x:
-    position.x = 0
+	position.x = 0
 if position.y < 0:
-    position.y = screen_size.y
+	position.y = screen_size.y
 if position.y > screen_size.y:
-    position.y = 0
+	position.y = 0
 ```
 
 
-# Session 3 * Create asteroids and spawning
+# Session 3  * Create asteroids and spawning
 ## Creating the Small Asteroid
 * Click on the `+` button at the top to add a new scene
 * Click on `Other Node` and search for `Area2D` and click on it and the `Create` button
@@ -201,13 +201,13 @@ screen_size = get_viewport_rect().size
 ```
 # Screen Wrap
 if position.x < 0:
-    position.x = screen_size.x
+	position.x = screen_size.x
 if position.x > screen_size.x:
-    position.x = 0
+	position.x = 0
 if position.y < 0:
-    position.y = screen_size.y
+	position.y = screen_size.y
 if position.y > screen_size.y:
-    position.y = 0
+	position.y = 0
 
 # Moving 
 position += direction * speed * delta
@@ -220,7 +220,7 @@ rotation += rotation_speed * delta
 var angle = randf_range(0, 2 * PI)  # Random angle in radians
 direction = Vector2(cos(angle), sin(angle))  # Convert angle to direction vector
 speed = randf_range(75, 200)  # Random speed between 75 and 200
-rotation_speed = randf_range(0.1, 1)  # Random rotation speed between 0.1 and 1
+rotation_speed = randf_range(-1, 1)  # Random rotation speed between -1 and 1
 ```
 * Now we will call this function in the `_ready()` function
 * Add the following code to the `_ready()` function
@@ -235,7 +235,7 @@ queue_free()
 * To test this we can add a couple of lines of code to `process(delta)` function
 ```
 if Input.is_action_just_pressed("shoot"):
-    destroy()
+	destroy()
 ```
 * Add a `Small_Asteroid` node as a child node to the `Game` node to test it out
 * We should see that pressing the `Space` key will destroy the asteroid
@@ -263,8 +263,8 @@ const SMALL_ASTEROID = preload("")
 * Each additional folder you have to go through to get to the file will need to be added to the path with a `/` inbetween each folder
 * If it isn't in any folders, you can just put `preload("res://Small_Asteroid.tscn")`
 * An easy way to do this is to drag the file from the `FileSystem` tab into the script and hold `Ctrl` while you let go of the mouse button
-* Next we will create a new function called `spawn_small_asteroids()` that will be called when we destroy the medium asteroid
-* Add the following code to the `spawn_small_asteroids()` function
+* Next we will create a new function called `create_and_add_asteroids` that will be called when we destroy the medium asteroid
+* Add the following code to the `create_and_add_asteroids` function
 ```
 # Instantate two small asteroids
 var small_asteroid1 = SMALL_ASTEROID.instantiate()
@@ -284,7 +284,7 @@ self.queue_free()
 * Now we will call this function in the `destroy()` function
 * Replace `queue_free()` in the `destroy()` function
 ```
-spawn_small_asteroids()
+call_deferred("create_and_add_asteroids")
 ```
 * Now add a `Medium_Asteroid` node as a child node to the `Game` node to test it out
 * We should see that pressing the `Space` key will destroy the asteroid and spawn two small asteroids in its place
@@ -305,17 +305,190 @@ spawn_small_asteroids()
 * Copy and paste the code from the `Medium_Asteroid` script into the `Large_Asteroid` script (See medium asteroid section for how to do this if you forgot how)
 * Now we will change some variables around
 * Instead of `const SMALL_ASTEROID = preload("")` we will change it to `const MEDIUM_ASTEROID = preload("")`
-* Then we need to change the name and our variables in the `spawn_small_asteroids()` function
-* Change the name of the function to `spawn_medium_asteroids()`
+* Then we need to change the name and our variables in the `create_and_add_asteroids()` function
+* Change the name of the function to `create_and_add_asteroids()`
 * Change the variable names from `small_asteroid1` and `small_asteroid2` to `medium_asteroid1` and `medium_asteroid2`
 * Change the variable names from `SMALL_ASTEROID.instantiate()` to `MEDIUM_ASTEROID.instantiate()`
 * Throw in a large asteroid into the `Game` scene to test it out
 * We should see that pressing the `Space` key will destroy the asteroid and spawn two medium asteroids in its place
 
 ## Creating the Asteroid Spawner
+* Click on your `Game` scene. We will use this to house our spawning mechanics
+* Add a `Timer` node as a child node to the `Game` node and name it `Spawn_Timer`
+* Now add a script to the `Game` node
+* Now we add some variables to the top of the script
+```
+@onready var spawn_timer = $Spawn_Timer
+var screen_size
+var asteroid_scenes = {
+	0: preload(""),
+	1: preload(""),
+	2: preload("")
+}
+```
+* Add your asteroid scenes to the `asteroid_scenes` dictionary
+* First things first we will need our `ready()` function to get our screen size
+* Add the following code to the `ready()` function
+```
+screen_size = get_viewport().get_visible_rect().size
+```
+* Now we will create a few new functions
+* First we will create a function called `spawn_asteroid()`
+* Add the following code to the `spawn_asteroid()` function
+```
+var new_asteroid = asteroid_scenes[randi_range(0,2)].instantiate()
+add_child(new_asteroid)
+new_asteroid.position = generate_spawn_point()
+```
+* Now we will create a function called `generate_spawn_point()`
+* Add the following code to the `generate_spawn_point()` function
+```
+var x = randf_range(-(100 + screen_size.x), screen_size.x + 100)
+var y = randf_range(-(100 + screen_size.y), screen_size.y + 100)
+
+if (x > screen_size.x/2 && x < screen_size.x/2) or (y > screen_size.y/2 && y < screen_size.y/2):
+	generate_spawn_point()
+
+return Vector2(x,y)
+```
+* Now to trigger the spawning we have to go into our timers inspector and click on the `Timeout` signal
+* Click on our `Spawn_Timer` node in the scene
+* Click on the `Node` tab next to the `Inspector` tab
+* Make sure you're on the `Signals` tab
+* Double click on the `Timeout` signal
+* Click on the `Connect` button
+* Now we will add the code to the `_on_Spawn_Timer_timeout()` function
+```
+spawn_asteroid()
+```
+* Open the game up and watch the asteroids spawn
 
 
 # Session 4 * Shooting and scoring
+## Creating the Bullet
+* Make a new scene called `Bullet`. Make it a `Area2D`
+* Add a `Sprite2D` node as a child node to the `Bullet` node
+* Drag your image that you will use for your bullet into the `Texture` section of the `Sprite2D` node
+* Add a `CollisionShape2D` node as a child node to the `Bullet` node
+* Create your collision shape around the bullet sprite
+* Save this with `Ctrl + S` and name it `Bullet.tscn`
+* Click on the `Bullet` node in the scene, right click on it, and click on `Attach Script`
+* Click `Create`
+* Add the following variables to the top of the script
+```
+var direction: Vector2
+var bullet_speed = 700
+var screen_size
+```
+* Add the following code to the `_ready()` function
+```
+screen_size = get_viewport_rect().size
+```
+* Add the following code to the `_physics_process(delta)` function
+```
+position += direction * bullet_speed * delta
+if position.x < 0:
+	queue_free()
+if position.x > screen_size.x:
+	queue_free()
+if position.y < 0:
+	queue_free()
+if position.y > screen_size.y:
+	queue_free()
+```
+* Now we will add a function to detect collisions
+* Click on the `Bullet` node in the scene
+* Click on the `Node` tab
+* Find the `area_entered()` signal and double click on it
+* Click on the `Connect` button
+* Add the following code to the `_on_area_entered()` function
+```
+area.destroy()
+queue_free()
+```
+
+## Layering and Masking
+* We need to change our collision layers and masks for every in-game object so that we don't have any unwanted collisions
+* Click on the `Bullet` node in the scene
+* Find the `CollisionShape2D` node in the `Inspector` tab
+* Click on the `Collision` tab
+* We will edit and name our layers and masks by clicking on the three vertical dots next to the `Layers` and `Masks` sections
+* Click on `Edit Layers` and change the `Layer 1` name to `Player`, `Layer 2` name to `Bullet`, and `Layer 3` name to `Asteroid`
+* This has changed the names of the layers and the masks
+* Afte changing the names we can click the three vertical dots again and click on `Bullets` for the layer and `Asteroids` for the mask
+* Now we will do the same for the `Player` node
+* Click on the `Player` node in the scene
+* Find the `Collision` property in the `Inspector` tab
+* Click on the three vertical dots next to the `Layers` and `Masks` sections to change the layer to `Player` and the mask to `Asteroids`
+* Finally, go through all your asteroids and change their layers to `Asteroids` and turn off all their masks
+
+## Shooting
+* First, go through all your asteroids and delete the two lines of code in the `process(delta)` function that destroys the asteroids when you press the `Space` key
+```
+if Input.is_action_just_pressed("shoot"):
+    destroy()
+```
+* Next, we need to create a new script that is going to save global variables and carry our games signals
+* Right click on any empty space in the `FileSystem` tab and click on `New Folder`
+* Name the folder `Global Scripts`
+* Right click on the `Global Scripts` folder and click on `Create New` and then `Script`
+* Name the script something like `Globals` or `Bus` for signal bus
+* Open the script and add the following code to the top of the script
+```
+var score: int
+
+signal increase_score
+```
+* Now back in our `Player` script we will add the following code to our variables at the top
+```
+const BULLET = preload("")
+```
+* Now we will add the following code to the `physics_process(delta)` function
+```
+if Input.is_action_pressed("shoot"):
+    var bulletInstance = BULLET.instantiate()  # Create a new instance of the Bullet scene
+    get_parent().add_child(bulletInstance)  # Add it to the player node or a designated parent node for bullets
+    bulletInstance.global_position = global_position  # Set the bullet's position
+    bulletInstance.direction = Vector2.UP.rotated(rotation)  # Set the bullet's direction
+```
+* Test the game and you should see that yoou shoot a stream of bullets when you hold down the `Space` key
+* This is way to fast so we will add some code to our shoot code we just wrote
+* Update your code to look like this
+```
+if Input.is_action_pressed("shoot") && shoot_timer.time_left == 0:  # Use action_just_pressed to prevent multiple bullets on a single press
+    var bulletInstance = BULLET.instantiate()  # Create a new instance of the Bullet scene
+    get_parent().add_child(bulletInstance)  # Add it to the player node or a designated parent node for bullets
+    bulletInstance.global_position = global_position  # Set the bullet's position
+    bulletInstance.direction = Vector2.UP.rotated(rotation)  # Set the bullet's direction
+    shoot_timer.start(0.35)
+```
+* Now we can destroy our asteroids with our bullets
+* Now we need to add a User Interface (UI) to display our score
+* Click on the `+` button at the top to add a new scene
+* Click on `Other Node` and search for `CanvasLayer` and click on it and the `Create` button
+* Rename the `CanvasLayer` node to `UI`
+* Add a `Label` node as a child node to the `UI` node
+* Rename the `Label` node to `Score_Label`
+* Click on the `Score_Label` node in the scene
+* Change the `Text` to `Score: 0`
+* Change the Alignments to `Center` and `Center`
+* Find the `Theme Overrides` section and click on `Font Sizes`
+* Change the font size to `32`
+* Open your `2D` view 
+* Click on the `Score_Label` node in the scene
+* Find the presets for the anchor and anchor the `Score_Label` to the top center of the screen
+* Add your `UI` scene as a child node to the `Game` scene
+* Add a script to your `UI` scene
+* Create a new function called `update_score(value)`
+* In the ready function add the following code
+```
+Globals.connect("increase_score", update_score)
+```
+* Add the following code to the `update_score(value)` function
+```
+Globals.score += value
+$Score_Label.text = "Score: " + str(Globals.score)
+```
 
 
 # Session 5 * Game over and restart (game saves)
