@@ -36,6 +36,7 @@ func set_direction_and_speed():
 
 
 func destroy():
+	Globals.increase_score.emit(200)
 	call_deferred("create_and_add_asteroids")
 
 

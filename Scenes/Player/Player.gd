@@ -43,3 +43,7 @@ func _physics_process(delta):
 		bulletInstance.global_position = global_position  # Set the bullet's position
 		bulletInstance.direction = Vector2.UP.rotated(rotation)  # Set the bullet's direction
 		shoot_timer.start(0.35)
+
+
+func _on_area_2d_area_entered(_area):
+	Globals.take_damage.emit(self)

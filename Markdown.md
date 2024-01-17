@@ -415,7 +415,7 @@ queue_free()
 * We will edit and name our layers and masks by clicking on the three vertical dots next to the `Layers` and `Masks` sections
 * Click on `Edit Layers` and change the `Layer 1` name to `Player`, `Layer 2` name to `Bullet`, and `Layer 3` name to `Asteroid`
 * This has changed the names of the layers and the masks
-* Afte changing the names we can click the three vertical dots again and click on `Bullets` for the layer and `Asteroids` for the mask
+* After changing the names we can click the three vertical dots again and click on `Bullets` for the layer and `Asteroids` for the mask
 * Now we will do the same for the `Player` node
 * Click on the `Player` node in the scene
 * Find the `Collision` property in the `Inspector` tab
@@ -439,6 +439,13 @@ var score: int
 
 signal increase_score
 ```
+* We now have two options for where to put our signal bus
+* We can either put it on the `Game` scene or we can set it to autoload
+* If we put it on the `Game` scene, we will have to add it to every scene that we want to use it in
+* Autoloading it will make it so that it is always loaded into the game
+* To autoload it, click on `Project` at the top of the Godot editor, then click on `Project Settings`, and then click on `AutoLoad`
+* Click on the `folder` icon next to the `Path` section
+* Click on the `Global Scripts` folder and then click on `Globals.gd`(or whatever you named it) and then click `Open`
 * Now back in our `Player` script we will add the following code to our variables at the top
 ```
 const BULLET = preload("")
@@ -463,6 +470,8 @@ if Input.is_action_pressed("shoot") && shoot_timer.time_left == 0:  # Use action
     shoot_timer.start(0.35)
 ```
 * Now we can destroy our asteroids with our bullets
+
+## Scoring
 * Now we need to add a User Interface (UI) to display our score
 * Click on the `+` button at the top to add a new scene
 * Click on `Other Node` and search for `CanvasLayer` and click on it and the `Create` button
@@ -489,9 +498,93 @@ Globals.connect("increase_score", update_score)
 Globals.score += value
 $Score_Label.text = "Score: " + str(Globals.score)
 ```
+* Now we will add the following code to the `destroy()` function in the `Small_Asteroid` script
+```
+Globals.increase_score.emit(300)
+```
+* Now we will add the following code to the `destroy()` function in the `Medium_Asteroid` script
+```
+Globals.increase_score.emit(200)
+```
+* Now we will add the following code to the `destroy()` function in the `Large_Asteroid` script
+```
+Globals.increase_score.emit(100)
+```
+* Let's test it out and see if our score is updating
 
 
 # Session 5 * Game over and restart (game saves)
+## Setting up a Lives System
+* Lets start by adding how many lives we want to have to our `Globals` script
+* Add the following code to the top of the `Globals` script
+```
+var lives = 3 
+```
+* Now we will add some more features to our `UI` scene
+* In your 2D view, click on the `UI` node in the scene
+* Add a `Label` node as a child node to the `UI` node
+* Rename the `Label` node to `Lives_Label`
+* Click on the `Lives_Text_Label` node in the scene
+* Change the `Text` to `Lives: `
+* Change the Alignments to `Center` and `Center`
+* Find the `Theme Overrides` section and click on `Font Sizes`
+* Change the font size to `32`
+* Click on the `Lives_Label` node in the scene
+* Find the presets for the anchor and anchor the `Lives_Label` to the top left of the screen
+* We will then make three `TextureRect` nodes to represent our lives
+* Create a `TextureRect` node as a child node to the `UI` node
+* Rename the `TextureRect` node to `Life1_Texture`
+* Click on the `Life1_Texture` node in the scene
+* Add our `Player` sprite to the `Texture` section of the `TextureRect` node
+* Set the `Expand Mode` to `Ignore Size`
+* Find the `Transform` section in the `Layout` section and change the `Scale` to `25` for `X` and `35` for `Y`
+* Set the position to `100` for `X` and `5` for `Y`
+* Copy and paste the `Life1_Texture` node twice and rename it to `Life2_Texture` and `Life3_Texture`
+* Change the `X` position of the `Life2_Texture` node to `135` and the `Life3_Texture` node to `170`
+* Now we will add a new function to our `UI` scene
+* Create a function called `update_lives(player)`
+* Add the following code to the `update_lives(player)` function
+```
+Globals.lives -= 1
+if Globals.lives == 2:
+	$Life3_Texture.visible = false
+	player.position = Vector2(960,540)
+	player.velocity = Vector2(0,0)
+	player.rotation = 0
+elif Globals.lives == 1:
+	player.position = Vector2(960,540)
+	player.velocity = Vector2(0,0)
+	player.rotation = 0
+	$Life2_Texture.visible = false
+elif Globals.lives == 0:
+	player.queue_free()
+	$Life1_Texture.visible = false
+```
+
+## Detecting Damage
+* Now we need to detect when our player collides with an asteroid
+* In your `Globals` script, add the following code to the top of the script
+```
+signal take_damage(player)
+```
+* Click on the `Player` node in the scene
+* Click on the `Area2D` node
+* Click on the `Node` tab
+* Find the `area_entered()` signal and double click on it
+* Click on the `Connect` button
+* Add the following code to the `_on_area_entered()` function
+```
+Globals.take_damage.emit(self)
+```
+* Back in our `UI` script, add the following code to the `ready()` function
+```
+Globals.connect("take_damage", update_lives)
+```
+
+
+
+
+
 
 
 # Session 6 * Final touch ups and exports

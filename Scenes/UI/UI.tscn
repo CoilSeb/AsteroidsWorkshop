@@ -1,6 +1,7 @@
-[gd_scene load_steps=2 format=3 uid="uid://d0i3bx4xotdp4"]
+[gd_scene load_steps=3 format=3 uid="uid://d0i3bx4xotdp4"]
 
 [ext_resource type="Script" path="res://Scenes/UI/UI.gd" id="1_7bnfo"]
+[ext_resource type="Texture2D" uid="uid://cy2p3man040cg" path="res://Sprites/Player-1.png.png" id="2_w50yf"]
 
 [node name="UI" type="CanvasLayer"]
 script = ExtResource("1_7bnfo")
@@ -15,3 +16,35 @@ offset_bottom = 23.0
 grow_horizontal = 2
 theme_override_font_sizes/font_size = 32
 text = "Score: 0"
+
+[node name="Lives_Text_Label" type="Label" parent="."]
+offset_right = 94.0
+offset_bottom = 45.0
+theme_override_font_sizes/font_size = 32
+text = "Lives: "
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Life1_Texture" type="TextureRect" parent="."]
+offset_left = 100.0
+offset_top = 5.0
+offset_right = 125.0
+offset_bottom = 40.0
+texture = ExtResource("2_w50yf")
+expand_mode = 1
+
+[node name="Life2_Texture" type="TextureRect" parent="."]
+offset_left = 135.0
+offset_top = 5.0
+offset_right = 160.0
+offset_bottom = 40.0
+texture = ExtResource("2_w50yf")
+expand_mode = 1
+
+[node name="Life3_Texture" type="TextureRect" parent="."]
+offset_left = 170.0
+offset_top = 5.0
+offset_right = 195.0
+offset_bottom = 40.0
+texture = ExtResource("2_w50yf")
+expand_mode = 1
