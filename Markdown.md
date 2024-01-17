@@ -579,8 +579,74 @@ Globals.take_damage.emit(self)
 * Back in our `UI` script, add the following code to the `ready()` function
 ```
 Globals.connect("take_damage", update_lives)
+screen_size = get_viewport().get_visible_rect().size
+```
+* As well as adding the screen_size variable to the top of the script
+```
+var screen_size
 ```
 
+## Game Over
+* Now we will create a new function called `game_over()`
+* Add the following code to the `game_over()` function
+```
+$Score_Label.set("theme_override_font_sizes/font_size", 56)
+$Score_Label.position = screen_size/2 - Vector2(60, 45)
+```
+* We now want to save this score to a file if it is higher than the previous high score
+* We will start by creating a `High_Score` label
+* Click on the `UI` node in the scene
+* Add a `Label` node as a child node to the `UI` node
+* Rename the `Label` node to `High_Score_Label`
+* Click on the `High_Score_Label` node in the scene
+* Change the `Text` to `High Score: `
+* Change the Alignments to `Center` and `Center`
+* Find the `Theme Overrides` section and click on `Font Sizes`
+* Change the font size to `128`
+* Anchor it to the top center of the screen
+* We now want to turn off the `High_Score_Label` when playing and turn it on when the game is over
+* Click on the eye icon next to the node name in the `Scene` tab
+* Now we will add the following code to the `game_over()` function
+```
+$High_Score_Label.visible = true
+```
+* Add a new variable to your globals script
+```
+var high_score = 0
+```
+* Now we will add some more code to the `game_over()` function at the top of the function, so it happens first
+```
+if Globals.score > Globals.high_score:
+	Globals.high_score = Globals.score
+	$High_Score_Label.text = "New High Score: " + str(Globals.high_score)
+else: $High_Score_Label.text = "High Score: " + str(Globals.high_score)
+```
+
+## Saving the High Score
+* Now we will create a new function called `save_high_score()` in our Globals script
+* Add the following code to the `save_high_score()` function
+```
+var saved_score = FileAccess.open("user://high_score.save", FileAccess.WRITE)
+var save_text = JSON.stringify({"High Score": Globals.high_score})
+saved_score.store_line(save_text)
+```
+* While we are here, we will also create a function called `load_high_score()`
+* Add the following code to the `load_high_score()` function
+```
+if not FileAccess.file_exists("user://high_score.save"):
+	print_debug("File does not exist")
+	return 0
+var saved_score = FileAccess.open("user://high_score.save", FileAccess.READ)
+var json_string = saved_score.get_line()
+
+var json = JSON.new()
+var parse_result = json.parse(json_string)
+if not parse_result == OK:
+	print_debug("No JSON")
+	return 0
+var data = json.get_data()
+return data["High Score"]
+```
 
 
 

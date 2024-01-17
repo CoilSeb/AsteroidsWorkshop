@@ -48,3 +48,17 @@ offset_right = 195.0
 offset_bottom = 40.0
 texture = ExtResource("2_w50yf")
 expand_mode = 1
+
+[node name="High_Score_Label" type="Label" parent="."]
+visible = false
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -43.5
+offset_right = 43.5
+offset_bottom = 23.0
+grow_horizontal = 2
+theme_override_font_sizes/font_size = 128
+text = "High Score:"
+horizontal_alignment = 1
+vertical_alignment = 1
