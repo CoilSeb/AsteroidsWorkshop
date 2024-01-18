@@ -647,10 +647,112 @@ if not parse_result == OK:
 var data = json.get_data()
 return data["High Score"]
 ```
+* In our `game_over()` function in the UI script, we will add the following code to our if statement
+```
+Globals.save_high_score()
+```
+* Now we will add the following code to the `ready()` function in the `Globals` script
+```
+high_score = load_high_score()
+```
+* Now lets add our high score to the start screen
+* Click on the `Start_Screen` node in the scene
+* Add a `Label` node as a child node to the `Control` node
+* Rename the `Label` node to `High_Score_Label`
+* Click on the `High_Score_Label` node in the scene
+* Change the `Text` to `High Score: `
+* Change the Alignments to `Center` and `Center`
+* Find the `Theme Overrides` section and click on `Font Sizes`
+* Change the font size to `32`
+* Anchor it to the bottom center of the screen
+* In your `Start_Screen` script, add the following code to the `ready()` function
+```
+$Control/High_Score_Label.text = "High Score: " + str(Globals.high_score)
+```
+* Play your game and see if your high score saves
 
+## Making a Pause Menu
+* In your `UI` scene, add a `Control` node as a child node to the `UI` node
+* Rename the `Control` node to `Pause_Menu`
+* Click on the `Pause_Menu` node in the scene
+* Change the `Size` to `1920 x 1080` or anchor it as the full screen size
+* Make a new `Button` node as a child node to the `Pause_Menu` node
+* Rename the `Button` node to `Resume_Button`
+* Click on the `Resume_Button` node in the scene
+* Change the `Text` to `Resume`
+* Change the anchor to `Center`
+* Under `Theme Overrides` click on `Font Sizes` and change the font size to `52`
+* Move its anchor to the center of the screen
+* Move its `Y` position to `400`
+* Copy and paste the `Resume_Button` button twice and rename it to `Exit_Button` and `Restart_Button`
+* Change the text of the `Exit_Button` to `Exit` and the `Restart_Button` to `Restart`
+* Move the `Exit_Button` to `Y` position `600` and the `Restart_Button` to `Y` position `500` if it isn't already there
+* Add a `ColorRect` node as a child node to the `Pause_Menu` node
+* Rename the `ColorRect` node to `Dim_Overlay`
+* Make it the same size as the `Pause_Menu`, aka full screen
+* Change the `Color` to `Black` and the `A` value to `75`
+* Now make the `Pause_Menu` not visible by clicking on the eye icon next to the node name in the `Scene` tab
+* Add a new function to the `UI` script called `toggle_pause_menu()`
+* Add the following code to the `toggle_pause_menu()` function
+```
+get_tree().paused = not get_tree().paused
+$Pause_Menu.visible = !$Pause_Menu.visible
+```
+* Go to your `Project Settings` and click on the `Input Map` tab
+* Add a new action called `Escape`
+* Click on the `+` button next to the `Escape` action and press the `Esc` key
+* Now we will add the following code to the `ready()` function
+```
+if Input.is_action_just_pressed("Escape"):
+	toggle_pause_menu()
+```
+* Click on your `UI` node and change its process mode to `Always`
+* Connect the `pressed()` signal of all of your `Pause_Menu` buttons to the `UI` script
+* Add the following code to the `_on_Resume_Button_pressed()` function
+```
+toggle_pause_menu()
+```
+* Add the following code to the `_on_Exit_Button_pressed()` function
+```
+toggle_pause_menu()
+get_tree().change_scene_to_file("res://Scenes/Start_Screen/Start_Screen.tscn")
+```
+* Lets add a new function to our `Globals` script called `reset_variables()`
+* Add the following code to the `reset_variables()` function
+```
+score = 0
+lives = 3
+```
+* Add the following code to the `_on_Restart_Button_pressed()` function
+```
+if get_tree().paused:
+	toggle_pause_menu()
+get_tree().reload_current_scene()
+Globals.reset_variables()
+```
+* Now go to your `Start_Screen` script and add the following code to the `_on_start_game_pressed()` function
+```
+Globals.reset_variables()
+```
+
+## Restarting the Game on Death
+* Copy the `Restart_Button` node from the `Pause_Menu` node
+* Paste it as a child node to the `UI` node
+* Set its font size to 100
+* Set its `Y` position to 650
+* Set the visiblity to false
+* The code we already wrote for the restart button should apply to this button as well
+* Now we will add the following code to the `game_over` function in the `UI` script
+```
+$Restart_Button.visible = true
+```
 
 
 
 
 
 # Session 6 * Final touch ups and exports
+
+
+
+UPDATE SPAWNING MECHANISM YOU BABOON

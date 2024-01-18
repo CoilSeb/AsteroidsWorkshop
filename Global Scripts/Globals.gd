@@ -1,7 +1,7 @@
 extends Node
 
 var score: int
-var lives = 1
+var lives = 3
 var high_score = 0
 
 signal increase_score(value)
@@ -9,11 +9,16 @@ signal take_damage(player)
 
 
 func _ready():
-	pass # Replace with function body.
+	high_score = load_high_score()
 
 
 func _process(_delta):
 	pass
+
+
+func reset_variables():
+	score = 0
+	lives = 3
 
 
 func save_high_score():

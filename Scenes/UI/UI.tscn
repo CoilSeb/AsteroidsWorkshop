@@ -4,6 +4,7 @@
 [ext_resource type="Texture2D" uid="uid://cy2p3man040cg" path="res://Sprites/Player-1.png.png" id="2_w50yf"]
 
 [node name="UI" type="CanvasLayer"]
+process_mode = 3
 script = ExtResource("1_7bnfo")
 
 [node name="Score_Label" type="Label" parent="."]
@@ -62,3 +63,70 @@ theme_override_font_sizes/font_size = 128
 text = "High Score:"
 horizontal_alignment = 1
 vertical_alignment = 1
+
+[node name="Restart_Button" type="Button" parent="."]
+visible = false
+offset_left = 625.5
+offset_top = 650.0
+offset_right = 1294.5
+offset_bottom = 795.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_font_sizes/font_size = 100
+text = "Restart Game"
+
+[node name="Pause_Menu" type="Control" parent="."]
+visible = false
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Dim_Overlay" type="ColorRect" parent="Pause_Menu"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 0.294118)
+
+[node name="Exit_Button" type="Button" parent="Pause_Menu"]
+layout_mode = 2
+offset_left = 909.5
+offset_top = 600.0
+offset_right = 1010.5
+offset_bottom = 680.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_font_sizes/font_size = 52
+text = "Exit"
+
+[node name="Resume_Button" type="Button" parent="Pause_Menu"]
+layout_mode = 2
+offset_left = 855.5
+offset_top = 400.0
+offset_right = 1064.5
+offset_bottom = 480.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_font_sizes/font_size = 52
+text = "Resume"
+
+[node name="Restart_Button" type="Button" parent="Pause_Menu"]
+layout_mode = 2
+offset_left = 785.0
+offset_top = 500.0
+offset_right = 1135.0
+offset_bottom = 580.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_font_sizes/font_size = 52
+text = "Restart Game"
+
+[connection signal="pressed" from="Restart_Button" to="." method="_on_restart_button_pressed"]
+[connection signal="pressed" from="Pause_Menu/Exit_Button" to="." method="_on_exit_button_pressed"]
+[connection signal="pressed" from="Pause_Menu/Resume_Button" to="." method="_on_resume_button_pressed"]
+[connection signal="pressed" from="Pause_Menu/Restart_Button" to="." method="_on_restart_button_pressed"]

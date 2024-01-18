@@ -10,7 +10,8 @@ func _ready():
 
 
 func _process(_delta):
-	pass
+	if Input.is_action_just_pressed("Escape"):
+		toggle_pause_menu()
 
 
 func update_score(value):
@@ -40,8 +41,30 @@ func game_over():
 	if Globals.score > Globals.high_score:
 		Globals.high_score = Globals.score
 		$High_Score_Label.text = "New High Score: " + str(Globals.high_score)
+		Globals.save_high_score()
 	else: $High_Score_Label.text = "High Score: " + str(Globals.high_score)
 	$Score_Label.set("theme_override_font_sizes/font_size", 56)
-	$Score_Label.position = screen_size/2 - Vector2(60, 45)
+	$Score_Label.position.y = screen_size.y/2 - 45
 	$High_Score_Label.visible = true
-	
+	$Restart_Button.visible = true
+
+
+func toggle_pause_menu():
+	get_tree().paused = not get_tree().paused
+	$Pause_Menu.visible = !$Pause_Menu.visible
+
+
+func _on_restart_button_pressed():
+	if get_tree().paused:
+		toggle_pause_menu()
+	get_tree().reload_current_scene()
+	Globals.reset_variables()
+
+
+func _on_resume_button_pressed():
+	toggle_pause_menu()
+
+
+func _on_exit_button_pressed():
+	toggle_pause_menu()
+	get_tree().change_scene_to_file("res://Scenes/Start_Screen/Start_Screen.tscn")

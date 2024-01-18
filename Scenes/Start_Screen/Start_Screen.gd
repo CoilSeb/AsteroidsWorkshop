@@ -3,7 +3,7 @@ extends Node2D
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
-	pass # Replace with function body.
+	$Control/High_Score_Label.text = "High Score: " + str(Globals.high_score)
 
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
@@ -13,6 +13,7 @@ func _process(_delta):
 
 
 func _on_start_game_pressed():
+	Globals.reset_variables()
 	get_tree().change_scene_to_file("res://Scenes/Game/Game.tscn")
 
 

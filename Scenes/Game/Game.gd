@@ -21,17 +21,25 @@ func _process(_delta):
 func spawn_asteroid():
 	var new_asteroid = asteroid_scenes[randi_range(0,2)].instantiate()
 	add_child(new_asteroid)
-	new_asteroid.position = generate_spawn_point()
+	new_asteroid.global_position = generate_spawn_point()
+	print_debug(new_asteroid.global_position)
 
 
-func generate_spawn_point():
-	var x = randf_range(-(100 + screen_size.x), screen_size.x + 100)
-	var y = randf_range(-(100 + screen_size.y), screen_size.y + 100)
-	
-	if (x > screen_size.x/2 && x < screen_size.x/2) or (y > screen_size.y/2 && y < screen_size.y/2):
-		generate_spawn_point()
-		
-	return Vector2(x,y)
+func random_vector(left, right, bottom, top):
+	return Vector2(randf_range(left, right), randf_range(bottom, top))
+
+func generate_spawn_point() -> Vector2:
+	var locations = [
+		# Upper Rectangle
+		random_vector(0, screen_size.x, screen_size.y, screen_size.y),
+		# Lower Rectangle
+		random_vector(0, screen_size.x, -screen_size.y, -screen_size.y),
+		# Right Rectangle
+		random_vector(screen_size.x, screen_size.x, 0, screen_size.y),
+		# Left Rectangle
+		random_vector(-screen_size.x, -screen_size.x, 0, screen_size.y),
+	]
+	return locations[randi_range(0,3)]
 
 
 func _on_spawn_timer_timeout():
