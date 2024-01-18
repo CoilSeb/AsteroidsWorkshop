@@ -11,7 +11,7 @@ script = ExtResource("1_jv313")
 position = Vector2(960, 540)
 
 [node name="Spawn_Timer" type="Timer" parent="."]
-wait_time = 2.5
+wait_time = 2.0
 autostart = true
 
 [node name="UI" parent="." instance=ExtResource("3_rwl4a")]

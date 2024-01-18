@@ -12,11 +12,13 @@ func _ready():
 func _process(_delta):
 	if Input.is_action_just_pressed("Escape"):
 		toggle_pause_menu()
+	if $Restart_Button.visible == true && Input.is_action_just_pressed("shoot"):
+		restart()
 
 
 func update_score(value):
 	Globals.score += value
-	$Score_Label.text = "Score: " + str(Globals.score)
+	$Score_Label.text = "Score: " + Globals.get_score_text(Globals.score)
 
 
 func update_lives(player):
@@ -40,9 +42,9 @@ func update_lives(player):
 func game_over():
 	if Globals.score > Globals.high_score:
 		Globals.high_score = Globals.score
-		$High_Score_Label.text = "New High Score: " + str(Globals.high_score)
+		$High_Score_Label.text = "New High Score: " + Globals.get_score_text(Globals.high_score)
 		Globals.save_high_score()
-	else: $High_Score_Label.text = "High Score: " + str(Globals.high_score)
+	else: $High_Score_Label.text = "High Score: " + Globals.get_score_text(Globals.high_score)
 	$Score_Label.set("theme_override_font_sizes/font_size", 56)
 	$Score_Label.position.y = screen_size.y/2 - 45
 	$High_Score_Label.visible = true
@@ -54,11 +56,15 @@ func toggle_pause_menu():
 	$Pause_Menu.visible = !$Pause_Menu.visible
 
 
-func _on_restart_button_pressed():
+func restart():
 	if get_tree().paused:
 		toggle_pause_menu()
 	get_tree().reload_current_scene()
 	Globals.reset_variables()
+
+
+func _on_restart_button_pressed():
+	restart()
 
 
 func _on_resume_button_pressed():

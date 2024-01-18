@@ -22,13 +22,12 @@ func spawn_asteroid():
 	var new_asteroid = asteroid_scenes[randi_range(0,2)].instantiate()
 	add_child(new_asteroid)
 	new_asteroid.global_position = generate_spawn_point()
-	print_debug(new_asteroid.global_position)
 
 
 func random_vector(left, right, bottom, top):
 	return Vector2(randf_range(left, right), randf_range(bottom, top))
 
-func generate_spawn_point() -> Vector2:
+func generate_spawn_point():
 	var locations = [
 		# Upper Rectangle
 		random_vector(0, screen_size.x, screen_size.y, screen_size.y),

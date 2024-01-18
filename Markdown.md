@@ -74,12 +74,12 @@
 ## Finishing coding the Start Screen
 * Go back to the `Start_Screen.gd` script in the `Script` tab
 * Add the following code to the `_on_start_game_pressed()` function
-```gdscript
+```
 func _on_start_game_pressed():
 	get_tree().change_scene_to_file("res://Scenes/Game/Game.tscn")
 ```
 * Add the following code to the `_on_exit_pressed()` function
-```gdscript
+```
 func _on_exit_pressed():
 	get_tree().quit()
 ```
@@ -117,6 +117,7 @@ var screen_size
 var thrust = 50 
 var rotateSpeed = 5
 var slowDown = 1
+var immune = true
 ```
 
 ## Create the player movement and shooting mechanics
@@ -140,6 +141,7 @@ if Input.is_action_pressed("rotate_right"):
 ```
 if Input.is_action_pressed("thrust"):
 	velocity += ((Vector2(0, -1) * thrust * delta).rotated(rotation))
+	immune = false
 	
 move_and_collide(velocity * delta)
 ```
@@ -340,16 +342,26 @@ var new_asteroid = asteroid_scenes[randi_range(0,2)].instantiate()
 add_child(new_asteroid)
 new_asteroid.position = generate_spawn_point()
 ```
+* Now we will create a new function called `random_vector`
+* Add the following code to the `random_vector()` function
+```
+return Vector2(randf_range(left, right), randf_range(bottom, top))
+```
 * Now we will create a function called `generate_spawn_point()`
 * Add the following code to the `generate_spawn_point()` function
 ```
-var x = randf_range(-(100 + screen_size.x), screen_size.x + 100)
-var y = randf_range(-(100 + screen_size.y), screen_size.y + 100)
-
-if (x > screen_size.x/2 && x < screen_size.x/2) or (y > screen_size.y/2 && y < screen_size.y/2):
-	generate_spawn_point()
-
-return Vector2(x,y)
+func generate_spawn_point():
+	var locations = [
+		# Upper Rectangle
+		random_vector(0, screen_size.x, screen_size.y, screen_size.y),
+		# Lower Rectangle
+		random_vector(0, screen_size.x, -screen_size.y, -screen_size.y),
+		# Right Rectangle
+		random_vector(screen_size.x, screen_size.x, 0, screen_size.y),
+		# Left Rectangle
+		random_vector(-screen_size.x, -screen_size.x, 0, screen_size.y),
+	]
+	return locations[randi_range(0,3)]
 ```
 * Now to trigger the spawning we have to go into our timers inspector and click on the `Timeout` signal
 * Click on our `Spawn_Timer` node in the scene
@@ -452,7 +464,7 @@ const BULLET = preload("")
 ```
 * Now we will add the following code to the `physics_process(delta)` function
 ```
-if Input.is_action_pressed("shoot"):
+if Input.is_action_pressed("shoot") && immune == false:
     var bulletInstance = BULLET.instantiate()  # Create a new instance of the Bullet scene
     get_parent().add_child(bulletInstance)  # Add it to the player node or a designated parent node for bullets
     bulletInstance.global_position = global_position  # Set the bullet's position
@@ -462,7 +474,7 @@ if Input.is_action_pressed("shoot"):
 * This is way to fast so we will add some code to our shoot code we just wrote
 * Update your code to look like this
 ```
-if Input.is_action_pressed("shoot") && shoot_timer.time_left == 0:  # Use action_just_pressed to prevent multiple bullets on a single press
+if Input.is_action_pressed("shoot") && immune == false && shoot_timer.time_left == 0:  # Use action_just_pressed to prevent multiple bullets on a single press
     var bulletInstance = BULLET.instantiate()  # Create a new instance of the Bullet scene
     get_parent().add_child(bulletInstance)  # Add it to the player node or a designated parent node for bullets
     bulletInstance.global_position = global_position  # Set the bullet's position
@@ -723,12 +735,22 @@ get_tree().change_scene_to_file("res://Scenes/Start_Screen/Start_Screen.tscn")
 score = 0
 lives = 3
 ```
-* Add the following code to the `_on_Restart_Button_pressed()` function
+We will create a new function called restart
+* Add the following code to the `restart()` function
 ```
 if get_tree().paused:
 	toggle_pause_menu()
 get_tree().reload_current_scene()
 Globals.reset_variables()
+```
+* Add the following code to the `_on_Restart_Button_pressed()` function
+```
+restart()
+```
+* Now we will add the following code to the `_process` function in the `UI` script
+```
+if $Restart_Button.visible == true && Input.is_action_just_pressed("shoot"):
+	restart()
 ```
 * Now go to your `Start_Screen` script and add the following code to the `_on_start_game_pressed()` function
 ```
@@ -746,13 +768,55 @@ Globals.reset_variables()
 ```
 $Restart_Button.visible = true
 ```
-
-
-
+* Now our game should restart when we press the restart button
 
 
 # Session 6 * Final touch ups and exports
+## Exporting the Game
+* Click on `Project` at the top of the Godot editor
+* Click on `Export`
+* Click on the `Windows Desktop` icon or whatever platform you want to export to
+* Click on the `Add` button
+* Click on the `Browse` button
+* Find the folder you want to export to and click `Select Folder`
+* Click on the `Export Project` button
+* Wait for it to finish exporting
+* Go to the folder you exported to and click on the `.exe` file to play your game
 
-
-
-UPDATE SPAWNING MECHANISM YOU BABOON
+## Bonus Stuff
+### Adding Commas to the Score
+* If we want to add commas to our score, we can refactor some code
+* Add a function called get_score_text(number) to your `Globals` script
+* Add the following code to the `get_score_text(number)` function
+```
+var score_string = str(number)
+var score_text = ""
+for i in range(len(score_string)):
+	score_text += score_string[i]
+	var distance = len(score_string) - i
+	if distance != 1 and distance % 3 == 1:
+		score_text += ","
+return score_text
+```
+* Now update the following functions in your `UI` script
+* In the `update_score(value)` function
+```
+Globals.score += value
+$Score_Label.text = "Score: " + Globals.get_score_text(Globals.score)
+```
+* Make the `Game_Over` function look like this
+```
+if Globals.score > Globals.high_score:
+	Globals.high_score = Globals.score
+	$High_Score_Label.text = "New High Score: " + Globals.get_score_text(Globals.high_score)
+	Globals.save_high_score()
+else: $High_Score_Label.text = "High Score: " + Globals.get_score_text(Globals.high_score)
+$Score_Label.set("theme_override_font_sizes/font_size", 56)
+$Score_Label.position.y = screen_size.y/2 - 45
+$High_Score_Label.visible = true
+$Restart_Button.visible = true
+```
+* Finally in your `Start_Screen` script, change the `ready()` function
+```
+$Control/High_Score_Label.text = "High Score: " + Globals.get_score_text(Globals.high_score)
+```

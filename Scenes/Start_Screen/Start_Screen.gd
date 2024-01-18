@@ -3,7 +3,7 @@ extends Node2D
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
-	$Control/High_Score_Label.text = "High Score: " + str(Globals.high_score)
+	$Control/High_Score_Label.text = "High Score: " + Globals.get_score_text(Globals.high_score)
 
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.

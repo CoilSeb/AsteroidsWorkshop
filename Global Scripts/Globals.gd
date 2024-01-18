@@ -20,6 +20,16 @@ func reset_variables():
 	score = 0
 	lives = 3
 
+func get_score_text(number):
+	var score_string = str(number)
+	var score_text = ""
+	for i in range(len(score_string)):
+		score_text += score_string[i]
+		var distance = len(score_string) - i
+		if distance != 1 and distance % 3 == 1:
+			score_text += ","
+	return score_text
+
 
 func save_high_score():
 	var saved_score = FileAccess.open("user://high_score.save", FileAccess.WRITE)
