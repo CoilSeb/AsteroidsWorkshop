@@ -6,6 +6,9 @@ var high_score = 0
 
 signal increase_score(value)
 signal take_damage(player)
+signal toggle_attack_cheats
+signal toggle_spawn_cheats
+signal toggle_inv_cheats
 
 
 func _ready():

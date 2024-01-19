@@ -3,6 +3,8 @@ extends Node2D
 @onready var spawn_timer = $Spawn_Timer
 
 var screen_size
+var spawn_rate = 2
+var toggle_spawn_cheats = false
 var asteroid_scenes = {
 	0: preload("res://Scenes/Large_Asteroid/Large_Asteroid.tscn"),
 	1: preload("res://Scenes/Medium_Asteroid/Medium_Asteroid.tscn"),
@@ -15,7 +17,12 @@ func _ready():
 
 
 func _process(_delta):
-	pass
+	if Input.is_action_just_pressed("Spawn_Cheat"):
+		toggle_spawn_cheats = !toggle_spawn_cheats
+		Globals.toggle_spawn_cheats.emit()
+		if toggle_spawn_cheats:
+			spawn_rate = 0.2
+		else: spawn_rate = 2
 
 
 func spawn_asteroid():
@@ -43,3 +50,4 @@ func generate_spawn_point():
 
 func _on_spawn_timer_timeout():
 	spawn_asteroid()
+	spawn_timer.start(spawn_rate)

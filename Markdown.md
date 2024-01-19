@@ -710,6 +710,19 @@ $Control/High_Score_Label.text = "High Score: " + str(Globals.high_score)
 get_tree().paused = not get_tree().paused
 $Pause_Menu.visible = !$Pause_Menu.visible
 ```
+* No we will add a pause button to our UI
+* Add a `Button` node as a child node to the `UI` node
+* Rename the `Button` node to `Pause_Button`
+* Click on the `Pause_Button` node in the scene
+* Change the `Texture` to a pause icon
+* Change the `Anchor` to the top right of the screen
+* Change the `Icon Behavior` to `Icon Alignment` `Center` and `Center`
+* Change the `Icon Behavior` `Expand Icon` on
+* Connect the node to the `UI` script
+* Add the following code to the `_on_Pause_Button_pressed()` function
+```
+toggle_pause_menu()
+```
 * Go to your `Project Settings` and click on the `Input Map` tab
 * Add a new action called `Escape`
 * Click on the `+` button next to the `Escape` action and press the `Esc` key
@@ -820,3 +833,33 @@ $Restart_Button.visible = true
 ```
 $Control/High_Score_Label.text = "High Score: " + Globals.get_score_text(Globals.high_score)
 ```
+
+### Adding Mouse Controls
+* Add the following variables to the top of the `Player` script
+```
+var using_mouse = false
+```
+* Now go into your `Input Map` and give thrust the `Mouse Button Left` action and shoot the `Mouse Button Right` action
+* Now change up your inputs to add the new things to the `physics_process(delta)` function
+```
+if Input.is_action_pressed("rotate_left"):
+	rotation += -1 * rotateSpeed * delta
+	using_mouse = false                                                                                    // New
+	immune = false
+if Input.is_action_pressed("rotate_right"):
+	using_mouse = false                                                                                    // New
+	immune = false
+	rotation += 1 * rotateSpeed * delta
+if Input.is_mouse_button_pressed(MOUSE_BUTTON_LEFT) || Input.is_mouse_button_pressed(MOUSE_BUTTON_RIGHT):  // New
+	using_mouse = true                                                                                     // New
+if using_mouse:                                                                                            // New
+	rotate(get_angle_to(get_global_mouse_position()) + (0.5 * PI))                                         // New
+if Input.is_action_pressed("thrust"):
+	velocity += ((Vector2(0, -1) * thrust * delta).rotated(rotation))
+	immune = false
+else:
+	velocity = lerp(velocity, Vector2.ZERO, slowDown * delta)
+	if velocity.y >= -1 && velocity.y <= 1:
+		velocity.y = 0
+```
+* Notice how we added a new `If` statement to check if the mouse is being used and since we added the controls to thrust and shoot, we don't have to write anymore code to make the mouse work

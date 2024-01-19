@@ -8,11 +8,17 @@ var thrust = 500
 var maxSpeed = 10
 var rotateSpeed = 5
 var slowDown = 1
+var attack_speed = 0.35
 var immune = true
+var using_mouse = false
+var toggle_attack_cheats = false
+var toggle_inv_cheats = false
 
 
 func _ready():
 	screen_size = get_viewport_rect().size
+	Globals.connect("toggle_attack_cheats", toggle_attack_cheat)
+	Globals.connect("toggle_inv_cheats", toggle_inv_cheat)
 
 
 func _physics_process(delta):
@@ -25,10 +31,23 @@ func _physics_process(delta):
 	if position.y > screen_size.y:
 		position.y = 0
 		
+	if Input.is_action_just_pressed("Attack_Cheat"):
+		Globals.toggle_attack_cheats.emit()
+	if Input.is_action_just_pressed("Invulnerability_Cheat"):
+		Globals.toggle_inv_cheats.emit()
+		
 	if Input.is_action_pressed("rotate_left"):
 		rotation += -1 * rotateSpeed * delta
+		using_mouse = false
+		immune = false
 	if Input.is_action_pressed("rotate_right"):
+		using_mouse = false
+		immune = false
 		rotation += 1 * rotateSpeed * delta
+	if Input.is_mouse_button_pressed(MOUSE_BUTTON_LEFT) || Input.is_mouse_button_pressed(MOUSE_BUTTON_RIGHT):
+		using_mouse = true
+	if using_mouse:
+		rotate(get_angle_to(get_global_mouse_position()) + (0.5 * PI))
 	if Input.is_action_pressed("thrust"):
 		velocity += ((Vector2(0, -1) * thrust * delta).rotated(rotation))
 		immune = false
@@ -44,10 +63,25 @@ func _physics_process(delta):
 		get_parent().add_child(bulletInstance)  # Add it to the player node or a designated parent node for bullets
 		bulletInstance.global_position = global_position  # Set the bullet's position
 		bulletInstance.direction = Vector2.UP.rotated(rotation)  # Set the bullet's direction
-		shoot_timer.start(0.35)
+		shoot_timer.start(attack_speed)
 
 
 func _on_area_2d_area_entered(_area):
-	if !immune:
+	if immune :
+		return
+	elif toggle_inv_cheats:
+		return
+	else:
 		Globals.take_damage.emit(self)
 		immune = true
+
+
+func toggle_attack_cheat():
+	if toggle_attack_cheats:
+		attack_speed = 0.35
+	else: attack_speed = 0.01
+	toggle_attack_cheats = !toggle_attack_cheats
+
+
+func toggle_inv_cheat():
+	toggle_inv_cheats = !toggle_inv_cheats

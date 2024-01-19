@@ -6,6 +6,9 @@ var screen_size
 func _ready():
 	Globals.connect("increase_score", update_score)
 	Globals.connect("take_damage", update_lives)
+	Globals.connect("toggle_attack_cheats", toggle_attack_label)
+	Globals.connect("toggle_spawn_cheats", toggle_spawn_label)
+	Globals.connect("toggle_inv_cheats", toggle_inv_label)
 	screen_size = get_viewport().get_visible_rect().size
 
 
@@ -51,6 +54,10 @@ func game_over():
 	$Restart_Button.visible = true
 
 
+func _on_pause_button_pressed():
+	toggle_pause_menu()
+
+
 func toggle_pause_menu():
 	get_tree().paused = not get_tree().paused
 	$Pause_Menu.visible = !$Pause_Menu.visible
@@ -74,3 +81,15 @@ func _on_resume_button_pressed():
 func _on_exit_button_pressed():
 	toggle_pause_menu()
 	get_tree().change_scene_to_file("res://Scenes/Start_Screen/Start_Screen.tscn")
+
+
+func toggle_attack_label():
+	$Attack_Cheat_Label.visible = !$Attack_Cheat_Label.visible 
+
+
+func toggle_spawn_label():
+	$Spawn_Cheat_Label.visible = !$Spawn_Cheat_Label.visible 
+
+
+func toggle_inv_label():
+	$Inv_Cheat_Label.visible = !$Inv_Cheat_Label.visible
