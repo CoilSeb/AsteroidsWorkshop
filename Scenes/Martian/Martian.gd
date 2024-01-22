@@ -33,7 +33,6 @@ func _physics_process(delta):
 		var martian_bullet_instance = MARTIAN_BULLET.instantiate()  # Create a new instance of the Bullet scene
 		get_parent().add_child(martian_bullet_instance)  # Add it to the player node or a designated parent node for bullets
 		martian_bullet_instance.global_position = global_position 
-		print(Vector2.UP.rotated(get_angle_to(player_pos)))
 		martian_bullet_instance.direction = Vector2.UP.rotated(get_angle_to(player_pos) + (0.5 * PI))
 		shoot = false
 
