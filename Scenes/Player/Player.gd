@@ -57,6 +57,7 @@ func _physics_process(delta):
 			velocity.y = 0
 			
 	move_and_collide(velocity * delta)
+	Globals.player_pos.emit(position)
 	
 	if Input.is_action_pressed("shoot") && shoot_timer.time_left == 0 && immune == false:  # Use action_just_pressed to prevent multiple bullets on a single press
 		var bulletInstance = BULLET.instantiate()  # Create a new instance of the Bullet scene
