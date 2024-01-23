@@ -2,6 +2,9 @@
 ## Install Godot 
 * [Download](https://godotengine.org/download) Latest Download of Godot
 
+## Download the Assets
+https://github.com/CoilSeb/AsteroidsWorkshop/blob/edd8209c42c4aaa776ef1afbe82ff2e8e62b9fe2/Sprites.zip
+
 ## Starting the Project
 * Open Godot
 * Click on New 
@@ -13,31 +16,24 @@
 * Click on `Project Settings`
 * Click on `Window`
 * Change the Window Size to `1920 x 1080`
-* Chnage the `Stretch` `Mode` to viewport
+* Change the `Stretch` `Mode` to viewport
 * Click on `Textures`
 * Change the Default Texture Filter to `Nearest`
 
 ## Creating the Start Screen 
-* Click on `2D Scene`
+* Click on `User Interface`
 * Name the scene `Start_Screen`
 * Save the scene
-* Click the + button to add a new node to the scene 
-
-## Creating the Start Screen UI
-* Search for `Control` and click on it and the `Create` button 
-* Click on the `Control` node in the scene
-* Click on the `Layout` tab
-* In the `Transform` section, change the `Size` to `1920 x 1080`
 
 ## Creating the Start Game and Exit Buttons
 * Right-Click on the `Control` node and click on `Add Child Node`
 * Search for `Button` and click on it and the `Create` button
-* Rename the `Button` node to `Start_Game`
-* Click on the `Start_Game` node in the scene
+* Rename the `Button` node to `Start_Button`
+* Click on the `Start_Button` node in the scene
 * Change the `Text` to `Start Game`
 * Change the anchor to `Center`
 * Under `Theme Overrides` click on `Font Sizes` and change the font size to `100`
-* Right-Click on the `Start_Game` node and click on `Duplicate`
+* Right-Click on the `Start_Button` node and click on `Duplicate`
 * Rename the new `Button` node to `Exit`
 * Click on the `Exit` node in the scene
 * Change the `Text` to `Exit`
@@ -53,7 +49,7 @@
 ## Start coding the Start Screen
 * Right-Click on `Start_Screen` node and click on `Attach Script`
 * Click `Create`
-* Click on `Start_Game` node in the scene
+* Click on `Start_Button` node in the scene
 * Click on the `Node` tab
 * Click on the `Signals` tab
 * Click on the `pressed()` signal
@@ -73,9 +69,9 @@
 
 ## Finishing coding the Start Screen
 * Go back to the `Start_Screen.gd` script in the `Script` tab
-* Add the following code to the `_on_start_game_pressed()` function
+* Add the following code to the `_on_start_Button_pressed()` function
 ```
-func _on_start_game_pressed():
+func _on_start_Button_pressed():
 	get_tree().change_scene_to_file("res://Scenes/Game/Game.tscn")
 ```
 * Add the following code to the `_on_exit_pressed()` function
@@ -83,7 +79,13 @@ func _on_start_game_pressed():
 func _on_exit_pressed():
 	get_tree().quit()
 ```
+* In the process function, add the following code
+```
+if Input.is_action_just_pressed("shoot"):
+	_on_start_button_pressed()
+```
 * Make sure to save often with `Ctrl + S`!!!
+
 
 
 # Session 2  * Creating the player and player movement
@@ -151,8 +153,8 @@ move_and_collide(velocity * delta)
 ```
 else:
 	velocity = lerp(velocity, Vector2.ZERO, slowDown * delta)
-	if velocity.y >= -1 && velocity.y <= 1:
-		velocity.y = 0
+	if velocity.length() >= -10 && velocity.length() <= 10:
+		velocity = Vector2.ZERO
 ```
 * Now we will add the code for screen wrapping
 * First we have to get the size of our screen
@@ -229,15 +231,15 @@ rotation_speed = randf_range(-1, 1)  # Random rotation speed between -1 and 1
 ```
 set_direction_and_speed()
 ```
-* We will also go ahead and make our custom destroy function
-* Create the destroy function and add the following code to it
+* Now we will connect the signal `tree_exited` to our script
+* Add the following code to the `_on_tree_exited()` function
 ```
-queue_free()
+print("Dead")
 ```
 * To test this we can add a couple of lines of code to `process(delta)` function
 ```
 if Input.is_action_just_pressed("shoot"):
-	destroy()
+	queue_free()
 ```
 * Add a `Small_Asteroid` node as a child node to the `Game` node to test it out
 * We should see that pressing the `Space` key will destroy the asteroid

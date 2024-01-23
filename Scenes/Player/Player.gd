@@ -67,7 +67,7 @@ func _physics_process(delta):
 		shoot_timer.start(attack_speed)
 
 
-func _on_area_2d_area_entered(area):
+func _on_area_2d_area_entered(_area):
 	if immune :
 		return
 	elif toggle_inv_cheats:
@@ -75,7 +75,6 @@ func _on_area_2d_area_entered(area):
 	else:
 		Globals.take_damage.emit(self)
 		immune = true
-		print(area)
 
 
 func toggle_attack_cheat():
