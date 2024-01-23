@@ -84,6 +84,8 @@ Invulnerability_Cheat={
 2d_physics/layer_1="Player"
 2d_physics/layer_2="Bullets"
 2d_physics/layer_3="Asteroids"
+2d_physics/layer_4="Martian"
+2d_physics/layer_5="Martian_Bullets"
 
 [rendering]
 
