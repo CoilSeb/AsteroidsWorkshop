@@ -279,9 +279,6 @@ small_asteroid2.position = self.position
 # Add them as children of the medium asteroid's parent
 self.get_parent().add_child.call_deferred(small_asteroid1)
 self.get_parent().add_child.call_deferred(small_asteroid2)
-
-# Queue the medium asteroid for deletion
-self.queue_free()
 ```
 * Now we will call this function in the `_on_tree_exiting()` function
 * Replace the `print("Dead")` line with the following code
@@ -317,33 +314,27 @@ self.queue_free()
 ## Creating the Asteroid Spawner
 * Click on your `Game` scene. We will use this to house our spawning mechanics
 * Add a `Timer` node as a child node to the `Game` node and name it `Spawn_Timer`
+* Set the time to `2` and the `Autostart` to `On`
 * Now add a script to the `Game` node
 * Now we add some variables to the top of the script
 ```
 @onready var spawn_timer = $Spawn_Timer
 var screen_size
-var asteroid_scenes = {
+var asteroid_scenes = [
 	0: preload(""),
 	1: preload(""),
 	2: preload("")
-}
+]
 ```
-* Add your asteroid scenes to the `asteroid_scenes` dictionary
+* Add your asteroid scenes to the `asteroid_scenes` array
 * First things first we will need our `ready()` function to get our screen size
 * Add the following code to the `ready()` function
 ```
 screen_size = get_viewport().get_visible_rect().size
 ```
 * Now we will create a few new functions
-* First we will create a function called `spawn_asteroid()`
-* Add the following code to the `spawn_asteroid()` function
-```
-var new_asteroid = asteroid_scenes[randi_range(0,2)].instantiate()
-add_child(new_asteroid)
-new_asteroid.position = generate_spawn_point()
-```
-* Now we will create a new function called `random_vector`
-* Add the following code to the `random_vector()` function
+* Now we will create a new function called `random_vector(left, right, bottom, top)`
+* Add the following code to the `random_vector(left, right, bottom, top)` function
 ```
 return Vector2(randf_range(left, right), randf_range(bottom, top))
 ```
@@ -371,7 +362,9 @@ func generate_spawn_point():
 * Click on the `Connect` button
 * Now we will add the code to the `_on_Spawn_Timer_timeout()` function
 ```
-spawn_asteroid()
+var new_asteroid = asteroid_scenes[randi_range(0,2)].instantiate()
+add_child(new_asteroid)
+new_asteroid.position = generate_spawn_point()
 ```
 * Open the game up and watch the asteroids spawn
 
