@@ -119,7 +119,6 @@ var screen_size
 var thrust = 50 
 var rotateSpeed = 5
 var slowDown = 1
-var immune = true
 ```
 
 ## Create the player movement and shooting mechanics
@@ -143,7 +142,6 @@ if Input.is_action_pressed("rotate_right"):
 ```
 if Input.is_action_pressed("thrust"):
 	velocity += ((Vector2(0, -1) * thrust * delta).rotated(rotation))
-	immune = false
 	
 move_and_collide(velocity * delta)
 ```
@@ -231,8 +229,8 @@ rotation_speed = randf_range(-1, 1)  # Random rotation speed between -1 and 1
 ```
 set_direction_and_speed()
 ```
-* Now we will connect the signal `tree_exited` to our script
-* Add the following code to the `_on_tree_exited()` function
+* Now we will connect the signal `tree_exiting` to our script
+* Add the following code to the `_on_tree_exiting()` function
 ```
 print("Dead")
 ```
@@ -260,9 +258,9 @@ if Input.is_action_just_pressed("shoot"):
 * We will copy and paste the code from the `Small_Asteroid` script into the `Medium_Asteroid` script (To do this easily, click on the `Small_Asteroid` script, press `Ctrl + A` to select all the code we want to copy, press `Ctrl + C` to copy the code, click on the `Medium_Asteroid` script, press `Ctrl+A` to select all the code we want to replace, and press `Ctrl + V` to paste the code)
 * Now we will add a new variable to the top of the script
 ```
-const SMALL_ASTEROID = preload("") 
+const SMALL_ASTEROID = preload() 
 ```
-* You will need to put the path to the `Small_Asteroid.tscn` file in the `preload()` function inbetween the quotation marks
+* You will need to put the path to the `Small_Asteroid.tscn` file in the `preload()` function inbetween the parenthesis
 * For example, if your `Small_Asteroid.tscn` file is in the `Scenes` folder, you would put `preload("res://Scenes/Small_Asteroid.tscn")`
 * Each additional folder you have to go through to get to the file will need to be added to the path with a `/` inbetween each folder
 * If it isn't in any folders, you can just put `preload("res://Small_Asteroid.tscn")`
@@ -270,7 +268,7 @@ const SMALL_ASTEROID = preload("")
 * Next we will create a new function called `create_and_add_asteroids` that will be called when we destroy the medium asteroid
 * Add the following code to the `create_and_add_asteroids` function
 ```
-# Instantate two small asteroids
+# Instantiate two small asteroids
 var small_asteroid1 = SMALL_ASTEROID.instantiate()
 var small_asteroid2 = SMALL_ASTEROID.instantiate()
 
@@ -279,16 +277,16 @@ small_asteroid1.position = self.position
 small_asteroid2.position = self.position
 
 # Add them as children of the medium asteroid's parent
-self.get_parent().add_child(small_asteroid1)
-self.get_parent().add_child(small_asteroid2)
+self.get_parent().add_child.call_deferred(small_asteroid1)
+self.get_parent().add_child.call_deferred(small_asteroid2)
 
 # Queue the medium asteroid for deletion
 self.queue_free()
 ```
-* Now we will call this function in the `destroy()` function
-* Replace `queue_free()` in the `destroy()` function
+* Now we will call this function in the `_on_tree_exiting()` function
+* Replace the `print("Dead")` line with the following code
 ```
-call_deferred("create_and_add_asteroids")
+"create_and_add_asteroids"()
 ```
 * Now add a `Medium_Asteroid` node as a child node to the `Game` node to test it out
 * We should see that pressing the `Space` key will destroy the asteroid and spawn two small asteroids in its place
@@ -310,9 +308,9 @@ call_deferred("create_and_add_asteroids")
 * Now we will change some variables around
 * Instead of `const SMALL_ASTEROID = preload("")` we will change it to `const MEDIUM_ASTEROID = preload("")`
 * Then we need to change the name and our variables in the `create_and_add_asteroids()` function
-* Change the name of the function to `create_and_add_asteroids()`
 * Change the variable names from `small_asteroid1` and `small_asteroid2` to `medium_asteroid1` and `medium_asteroid2`
 * Change the variable names from `SMALL_ASTEROID.instantiate()` to `MEDIUM_ASTEROID.instantiate()`
+* Make sure you connect the `tree_exiting` signal
 * Throw in a large asteroid into the `Game` scene to test it out
 * We should see that pressing the `Space` key will destroy the asteroid and spawn two medium asteroids in its place
 
@@ -398,7 +396,7 @@ var screen_size
 ```
 screen_size = get_viewport_rect().size
 ```
-* Add the following code to the `_physics_process(delta)` function
+* Add the following code to the `_process(delta)` function
 ```
 position += direction * bullet_speed * delta
 if position.x < 0:
@@ -417,7 +415,7 @@ if position.y > screen_size.y:
 * Click on the `Connect` button
 * Add the following code to the `_on_area_entered()` function
 ```
-area.destroy()
+area.queue_free()
 queue_free()
 ```
 
@@ -433,40 +431,65 @@ queue_free()
 * Now we will do the same for the `Player` node
 * Click on the `Player` node in the scene
 * Find the `Collision` property in the `Inspector` tab
-* Click on the three vertical dots next to the `Layers` and `Masks` sections to change the layer to `Player` and the mask to `Asteroids`
-* Finally, go through all your asteroids and change their layers to `Asteroids` and turn off all their masks
+* Click on the three vertical dots next to the `Layers` and `Masks` sections to change the layer to `Player` and turn off all masks
+* Finally, go through all your asteroids and change their layers to `Asteroids` and masks to `Player`
 
 ## Shooting
 * First, go through all your asteroids and delete the two lines of code in the `process(delta)` function that destroys the asteroids when you press the `Space` key
 ```
 if Input.is_action_just_pressed("shoot"):
-    destroy()
+	queue_free()
 ```
 * Next, we need to create a new script that is going to save global variables and carry our games signals
 * Right click on any empty space in the `FileSystem` tab and click on `New Folder`
 * Name the folder `Global Scripts`
 * Right click on the `Global Scripts` folder and click on `Create New` and then `Script`
-* Name the script something like `Globals` or `Bus` for signal bus
+* Name the script something like `Globals` or `Bus` for signal bus. I will be using `Globals`
 * Open the script and add the following code to the top of the script
 ```
 var score: int
+var immune = true
 
 signal increase_score
 ```
 * We now have two options for where to put our signal bus
 * We can either put it on the `Game` scene or we can set it to autoload
 * If we put it on the `Game` scene, we will have to add it to every scene that we want to use it in
-* Autoloading it will make it so that it is always loaded into the game
+* Autoloading it will make it so that it is always loaded into the game no matter where in our game we are
 * To autoload it, click on `Project` at the top of the Godot editor, then click on `Project Settings`, and then click on `AutoLoad`
 * Click on the `folder` icon next to the `Path` section
-* Click on the `Global Scripts` folder and then click on `Globals.gd`(or whatever you named it) and then click `Open`
+* Click on the `Global Scripts` folder and then click on `Globals.gd`(or whatever you named it) and then click `Add`
 * Now back in our `Player` script we will add the following code to our variables at the top
 ```
-const BULLET = preload("")
+const BULLET = preload()
+```
+* Now we edit add some code to our `physics_process(delta)` function to turn off our immunity
+* Add the following code to the `physics_process(delta)` function underneath each of the `if Input.is_action_pressed()` statements
+```
+Globals.immune = false
+```
+* It should look something like this
+```
+if Input.is_action_pressed("rotate_left"):
+	rotation += -1 * rotateSpeed * delta
+	Globals.immune = false                                                 // New
+if Input.is_action_pressed("rotate_right"):
+	rotation += 1 * rotateSpeed * delta
+	Globals.immune = false                                                 // New
+	
+if Input.is_action_pressed("thrust"):
+	velocity += ((Vector2(0, -1) * thrust * delta).rotated(rotation))
+	Globals.immune = false                                                 // New
+else:
+	velocity = lerp(velocity, Vector2.ZERO, slowDown * delta)
+	if velocity.length() >= -10 && velocity.length() <= 10:
+		velocity = Vector2.ZERO
+		
+move_and_collide(velocity * delta)
 ```
 * Now we will add the following code to the `physics_process(delta)` function
 ```
-if Input.is_action_pressed("shoot") && immune == false:
+if Input.is_action_pressed("shoot") && Globals.immune == false:
     var bulletInstance = BULLET.instantiate()  # Create a new instance of the Bullet scene
     get_parent().add_child(bulletInstance)  # Add it to the player node or a designated parent node for bullets
     bulletInstance.global_position = global_position  # Set the bullet's position
@@ -476,7 +499,7 @@ if Input.is_action_pressed("shoot") && immune == false:
 * This is way to fast so we will add some code to our shoot code we just wrote
 * Update your code to look like this
 ```
-if Input.is_action_pressed("shoot") && immune == false && shoot_timer.time_left == 0:  # Use action_just_pressed to prevent multiple bullets on a single press
+if Input.is_action_pressed("shoot") && Globals.immune == false && shoot_timer.time_left == 0:  # Use action_just_pressed to prevent multiple bullets on a single press
     var bulletInstance = BULLET.instantiate()  # Create a new instance of the Bullet scene
     get_parent().add_child(bulletInstance)  # Add it to the player node or a designated parent node for bullets
     bulletInstance.global_position = global_position  # Set the bullet's position
@@ -512,15 +535,15 @@ Globals.connect("increase_score", update_score)
 Globals.score += value
 $Score_Label.text = "Score: " + str(Globals.score)
 ```
-* Now we will add the following code to the `destroy()` function in the `Small_Asteroid` script
+* Now we will add the following code to the `_on_tree_exiting()` function in the `Small_Asteroid` script
 ```
 Globals.increase_score.emit(300)
 ```
-* Now we will add the following code to the `destroy()` function in the `Medium_Asteroid` script
+* Now we will add the following code to the `_on_tree_exiting()` function in the `Medium_Asteroid` script
 ```
 Globals.increase_score.emit(200)
 ```
-* Now we will add the following code to the `destroy()` function in the `Large_Asteroid` script
+* Now we will add the following code to the `_on_tree_exiting()` function in the `Large_Asteroid` script
 ```
 Globals.increase_score.emit(100)
 ```
