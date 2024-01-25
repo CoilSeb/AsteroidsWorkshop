@@ -17,6 +17,7 @@ texture = ExtResource("1_xucss")
 polygon = PackedVector2Array(-10, -8, -5, -5, 7, -5, 10, -8, 9, 5, 7, 7, -6, 7, -9, 4, -9, -2)
 
 [node name="ShootTimer" type="Timer" parent="."]
+wait_time = 2.0
 one_shot = true
 
 [node name="MoveTimer" type="Timer" parent="."]

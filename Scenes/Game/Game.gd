@@ -1,7 +1,7 @@
 extends Node2D
 
 @onready var spawn_timer = $Spawn_Timer
-
+const MARTIAN = preload("res://Scenes/Martian/Martian.tscn")
 var screen_size
 var spawn_rate = 2
 var toggle_spawn_cheats = false
@@ -31,6 +31,12 @@ func spawn_asteroid():
 	new_asteroid.global_position = generate_spawn_point()
 
 
+func spawn_martian():
+	var new_martian = MARTIAN.instantiate()
+	add_child(new_martian)
+	new_martian.global_position = generate_spawn_point()
+
+
 func random_vector(left, right, bottom, top):
 	return Vector2(randf_range(left, right), randf_range(bottom, top))
 
@@ -51,3 +57,6 @@ func generate_spawn_point():
 func _on_spawn_timer_timeout():
 	spawn_asteroid()
 	spawn_timer.start(spawn_rate)
+	if randi_range(0,19) == 0:
+		spawn_martian()
+		
