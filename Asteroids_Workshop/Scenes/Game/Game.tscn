@@ -1,0 +1,23 @@
+[gd_scene load_steps=5 format=3 uid="uid://8avbpqtvsn7y"]
+
+[ext_resource type="Script" path="res://Scenes/Game/Game.gd" id="1_jv313"]
+[ext_resource type="PackedScene" uid="uid://c0lptktcfc4ta" path="res://Scenes/Player/Player.tscn" id="1_x5jet"]
+[ext_resource type="PackedScene" uid="uid://d0i3bx4xotdp4" path="res://Scenes/UI/UI.tscn" id="3_rwl4a"]
+[ext_resource type="PackedScene" uid="uid://d2fsoufj0kmm8" path="res://Scenes/Martian/Martian.tscn" id="4_ofwpy"]
+
+[node name="Game" type="Node2D"]
+script = ExtResource("1_jv313")
+
+[node name="Player" parent="." instance=ExtResource("1_x5jet")]
+position = Vector2(960, 540)
+
+[node name="Spawn_Timer" type="Timer" parent="."]
+wait_time = 2.0
+autostart = true
+
+[node name="UI" parent="." instance=ExtResource("3_rwl4a")]
+
+[node name="Martian" parent="." instance=ExtResource("4_ofwpy")]
+position = Vector2(776, 413)
+
+[connection signal="timeout" from="Spawn_Timer" to="." method="_on_spawn_timer_timeout"]

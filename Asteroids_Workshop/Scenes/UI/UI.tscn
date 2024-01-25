@@ -1,0 +1,188 @@
+[gd_scene load_steps=4 format=3 uid="uid://d0i3bx4xotdp4"]
+
+[ext_resource type="Script" path="res://Scenes/UI/UI.gd" id="1_7bnfo"]
+[ext_resource type="Texture2D" uid="uid://cy2p3man040cg" path="res://Sprites/Player-1.png.png" id="2_w50yf"]
+[ext_resource type="Texture2D" uid="uid://srcma778jfmb" path="res://Sprites/Pause_Button-1.png(1).png" id="3_wq6vk"]
+
+[node name="UI" type="CanvasLayer"]
+process_mode = 3
+script = ExtResource("1_7bnfo")
+
+[node name="Score_Label" type="Label" parent="."]
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -20.0
+offset_right = 20.0
+offset_bottom = 23.0
+grow_horizontal = 2
+theme_override_font_sizes/font_size = 32
+text = "Score: 0"
+
+[node name="Lives_Text_Label" type="Label" parent="."]
+offset_right = 94.0
+offset_bottom = 45.0
+theme_override_font_sizes/font_size = 32
+text = "Lives: "
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Life1_Texture" type="TextureRect" parent="."]
+offset_left = 100.0
+offset_top = 5.0
+offset_right = 125.0
+offset_bottom = 40.0
+texture = ExtResource("2_w50yf")
+expand_mode = 1
+
+[node name="Life2_Texture" type="TextureRect" parent="."]
+offset_left = 135.0
+offset_top = 5.0
+offset_right = 160.0
+offset_bottom = 40.0
+texture = ExtResource("2_w50yf")
+expand_mode = 1
+
+[node name="Life3_Texture" type="TextureRect" parent="."]
+offset_left = 170.0
+offset_top = 5.0
+offset_right = 195.0
+offset_bottom = 40.0
+texture = ExtResource("2_w50yf")
+expand_mode = 1
+
+[node name="High_Score_Label" type="Label" parent="."]
+visible = false
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -43.5
+offset_right = 43.5
+offset_bottom = 23.0
+grow_horizontal = 2
+theme_override_font_sizes/font_size = 128
+text = "High Score:"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Restart_Button" type="Button" parent="."]
+visible = false
+offset_left = 625.5
+offset_top = 650.0
+offset_right = 1294.5
+offset_bottom = 795.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_font_sizes/font_size = 100
+text = "Restart Game"
+
+[node name="Pause_Menu" type="Control" parent="."]
+visible = false
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Dim_Overlay" type="ColorRect" parent="Pause_Menu"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 0.294118)
+
+[node name="Exit_Button" type="Button" parent="Pause_Menu"]
+layout_mode = 2
+offset_left = 909.5
+offset_top = 600.0
+offset_right = 1010.5
+offset_bottom = 680.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_font_sizes/font_size = 52
+text = "Exit"
+
+[node name="Resume_Button" type="Button" parent="Pause_Menu"]
+layout_mode = 2
+offset_left = 855.5
+offset_top = 400.0
+offset_right = 1064.5
+offset_bottom = 480.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_font_sizes/font_size = 52
+text = "Resume"
+
+[node name="Restart_Button" type="Button" parent="Pause_Menu"]
+layout_mode = 2
+offset_left = 785.0
+offset_top = 500.0
+offset_right = 1135.0
+offset_bottom = 580.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_font_sizes/font_size = 52
+text = "Restart Game"
+
+[node name="Pause_Button" type="Button" parent="."]
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -67.0
+offset_bottom = 56.0
+grow_horizontal = 0
+icon = ExtResource("3_wq6vk")
+icon_alignment = 1
+expand_icon = true
+
+[node name="Attack_Cheat_Label" type="Label" parent="."]
+visible = false
+anchors_preset = 4
+anchor_top = 0.5
+anchor_bottom = 0.5
+offset_top = -86.0
+offset_right = 40.0
+offset_bottom = -14.0
+grow_vertical = 2
+theme_override_font_sizes/font_size = 52
+text = "A"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Spawn_Cheat_Label" type="Label" parent="."]
+visible = false
+anchors_preset = 4
+anchor_top = 0.5
+anchor_bottom = 0.5
+offset_top = -36.0
+offset_right = 40.0
+offset_bottom = 36.0
+grow_vertical = 2
+theme_override_font_sizes/font_size = 52
+text = "S"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Inv_Cheat_Label" type="Label" parent="."]
+visible = false
+anchors_preset = 4
+anchor_top = 0.5
+anchor_bottom = 0.5
+offset_top = 14.0
+offset_right = 40.0
+offset_bottom = 86.0
+grow_vertical = 2
+theme_override_font_sizes/font_size = 52
+text = "I
+"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[connection signal="pressed" from="Restart_Button" to="." method="_on_restart_button_pressed"]
+[connection signal="pressed" from="Pause_Menu/Exit_Button" to="." method="_on_exit_button_pressed"]
+[connection signal="pressed" from="Pause_Menu/Resume_Button" to="." method="_on_resume_button_pressed"]
+[connection signal="pressed" from="Pause_Menu/Restart_Button" to="." method="_on_restart_button_pressed"]
+[connection signal="pressed" from="Pause_Button" to="." method="_on_pause_button_pressed"]

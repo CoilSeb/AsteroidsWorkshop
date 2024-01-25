@@ -14,5 +14,4 @@ func _process(delta):
 
 
 func destroy():
-	Globals.increase_score.emit(750)
 	martian.queue_free()
