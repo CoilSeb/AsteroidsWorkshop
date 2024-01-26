@@ -321,9 +321,9 @@ self.get_parent().add_child.call_deferred(small_asteroid2)
 @onready var spawn_timer = $Spawn_Timer
 var screen_size
 var asteroid_scenes = [
-	0: preload(""),
-	1: preload(""),
-	2: preload("")
+	0: preload(),
+	1: preload(),
+	2: preload()
 ]
 ```
 * Add your asteroid scenes to the `asteroid_scenes` array
@@ -424,8 +424,8 @@ queue_free()
 * Now we will do the same for the `Player` node
 * Click on the `Player` node in the scene
 * Find the `Collision` property in the `Inspector` tab
-* Click on the three vertical dots next to the `Layers` and `Masks` sections to change the layer to `Player` and turn off all masks
-* Finally, go through all your asteroids and change their layers to `Asteroids` and masks to `Player`
+* Click on the three vertical dots next to the `Layers` and `Masks` sections to change the layer to `Player` and set the mask to `Asteroids`
+* Finally, go through all your asteroids and change their layers to `Asteroids` and turn off their masks
 
 ## Shooting
 * First, go through all your asteroids and delete the two lines of code in the `process(delta)` function that destroys the asteroids when you press the `Space` key
@@ -567,7 +567,7 @@ var lives = 3
 * Click on the `Life1_Texture` node in the scene
 * Add our `Player` sprite to the `Texture` section of the `TextureRect` node
 * Set the `Expand Mode` to `Ignore Size`
-* Find the `Transform` section in the `Layout` section and change the `Scale` to `25` for `X` and `35` for `Y`
+* Find the `Transform` section in the `Layout` section and change the `Size` to `25` for `X` and `35` for `Y`
 * Set the position to `100` for `X` and `5` for `Y`
 * Copy and paste the `Life1_Texture` node twice and rename it to `Life2_Texture` and `Life3_Texture`
 * Change the `X` position of the `Life2_Texture` node to `135` and the `Life3_Texture` node to `170`
@@ -651,6 +651,11 @@ if Globals.score > Globals.high_score:
 	$High_Score_Label.text = "New High Score: " + str(Globals.high_score)
 else: $High_Score_Label.text = "High Score: " + str(Globals.high_score)
 ```
+* Now lets call game over when our player dies
+* Add the following code to the `update_lives(player)` function when lives equals 0
+```
+game_over()
+```
 
 ## Saving the High Score
 * Now we will create a new function called `save_high_score()` in our Globals script
@@ -677,13 +682,13 @@ if not parse_result == OK:
 var data = json.get_data()
 return data["High Score"]
 ```
-* In our `game_over()` function in the UI script, we will add the following code to our if statement
-```
-Globals.save_high_score()
-```
 * Now we will add the following code to the `ready()` function in the `Globals` script
 ```
 high_score = load_high_score()
+```
+* In our `game_over()` function in the UI script, we will add the following code to our if statement
+```
+Globals.save_high_score()
 ```
 * Now lets add our high score to the start screen
 * Click on the `Start_Screen` node in the scene
@@ -697,7 +702,7 @@ high_score = load_high_score()
 * Anchor it to the bottom center of the screen
 * In your `Start_Screen` script, add the following code to the `ready()` function
 ```
-$Control/High_Score_Label.text = "High Score: " + str(Globals.high_score)
+$High_Score_Label.text = "High Score: " + str(Globals.high_score)
 ```
 * Play your game and see if your high score saves
 
@@ -712,7 +717,6 @@ $Control/High_Score_Label.text = "High Score: " + str(Globals.high_score)
 * Change the `Text` to `Resume`
 * Change the anchor to `Center`
 * Under `Theme Overrides` click on `Font Sizes` and change the font size to `52`
-* Move its anchor to the center of the screen
 * Move its `Y` position to `400`
 * Copy and paste the `Resume_Button` button twice and rename it to `Exit_Button` and `Restart_Button`
 * Change the text of the `Exit_Button` to `Exit` and the `Restart_Button` to `Restart`
@@ -744,7 +748,7 @@ toggle_pause_menu()
 * Go to your `Project Settings` and click on the `Input Map` tab
 * Add a new action called `Escape`
 * Click on the `+` button next to the `Escape` action and press the `Esc` key
-* Now we will add the following code to the `ready()` function
+* Now we will add the following code to the `process()` function
 ```
 if Input.is_action_just_pressed("Escape"):
 	toggle_pause_menu()
@@ -758,7 +762,7 @@ toggle_pause_menu()
 * Add the following code to the `_on_Exit_Button_pressed()` function
 ```
 toggle_pause_menu()
-get_tree().change_scene_to_file("res://Scenes/Start_Screen/Start_Screen.tscn")
+get_tree().change_scene_to_file()
 ```
 * Lets add a new function to our `Globals` script called `reset_variables()`
 * Add the following code to the `reset_variables()` function
@@ -767,21 +771,17 @@ score = 0
 lives = 3
 ```
 We will create a new function called restart
-* Add the following code to the `restart()` function
+* Add the following code to the `on_restart_button_pressed()` function in our `UI` script
 ```
 if get_tree().paused:
 	toggle_pause_menu()
-get_tree().reload_current_scene()
 Globals.reset_variables()
-```
-* Add the following code to the `_on_Restart_Button_pressed()` function
-```
-restart()
+get_tree().reload_current_scene()
 ```
 * Now we will add the following code to the `_process` function in the `UI` script
 ```
 if $Restart_Button.visible == true && Input.is_action_just_pressed("shoot"):
-	restart()
+	_on_restart_button_pressed()
 ```
 * Now go to your `Start_Screen` script and add the following code to the `_on_start_game_pressed()` function
 ```
