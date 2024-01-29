@@ -1,7 +1,7 @@
 extends Area2D
 
 var direction: Vector2
-var bullet_speed = 700
+var bullet_speed = 450
 var screen_size
 
 
