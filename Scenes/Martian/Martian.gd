@@ -8,6 +8,7 @@ var shoot = false
 var shoot_buffer = 50
 const MARTIAN_BULLET = preload("res://Scenes/Martian_Bullet/Martian_Bullet.tscn")
 var player_pos
+var volume = 10
 
 
 func _ready():

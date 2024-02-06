@@ -5,6 +5,7 @@ var screen_size
 var speed
 var rotation_speed
 var direction
+var volume = 24
 
 
 func _ready():

@@ -10,6 +10,8 @@ signal toggle_attack_cheats
 signal toggle_spawn_cheats
 signal toggle_inv_cheats
 signal player_pos(player_coords)
+signal explosion(volume)
+signal game_over
 
 
 func _ready():

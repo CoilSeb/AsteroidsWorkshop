@@ -881,3 +881,39 @@ else:
 		velocity.y = 0
 ```
 * Notice how we added a new `If` statement to check if the mouse is being used and since we added the controls to thrust and shoot, we don't have to write anymore code to make the mouse work
+
+### Adding Sound Effects
+* Add a `AudioStreamPlayer` node as a child node to the `Game` node
+* Rename the `AudioStreamPlayer` node to `Explosion`
+* Click on the `Explosion` node in the scene
+* Click on the `Stream` section and click on the `Load` button
+* Find the sound effect you want to use and click `Open`
+* Do the same for a new sound called `Game_Over`
+* Now in `Globals` script, add the following code to the top of the script
+```
+signal play_explosion(volume)
+signal play_game_over()
+```
+* Now back in our `Game` script we will add our AudioStreamPlayers as variables
+```
+@onready var explosion = $Explosion
+@onready var game_over = $Game_Over
+```
+* Add two new functions and the following code
+```
+func play_explosion(volume):
+	explosion.volume_db = volume
+	explosion.play()
+
+
+func play_game_over():
+	game_over.play(0.5)
+```
+* Now we will add the following code to the `_on_tree_exiting()` function to all the asteroid scripts
+```
+Globals.play_explosion.emit(20)
+```
+* Now we will add the following code to the `game_over()` function in the `UI` script
+```
+Globals.play_game_over.emit()
+```

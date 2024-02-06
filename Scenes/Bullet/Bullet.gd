@@ -22,5 +22,6 @@ func _process(delta):
 
 
 func _on_area_entered(area):
+	Globals.explosion.emit(area.volume)
 	area.destroy()
 	queue_free()

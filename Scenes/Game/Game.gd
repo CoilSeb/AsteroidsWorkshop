@@ -14,6 +14,7 @@ var asteroid_scenes = {
 
 func _ready():
 	screen_size = get_viewport().get_visible_rect().size
+	Globals.explosion.connect(play_explosion)
 
 
 func _process(_delta):
@@ -60,3 +61,8 @@ func _on_spawn_timer_timeout():
 	if randi_range(0,19) == 0:
 		spawn_martian()
 		
+
+
+func play_explosion(volume):
+	$Explosion.volume_db = volume
+	$Explosion.play()
