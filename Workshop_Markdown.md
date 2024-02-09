@@ -441,7 +441,6 @@ if Input.is_action_just_pressed("shoot"):
 * Open the script and add the following code to the top of the script
 ```
 var score: int
-var immune = true
 
 signal increase_score
 ```
@@ -456,33 +455,9 @@ signal increase_score
 ```
 const BULLET = preload()
 ```
-* Now we edit add some code to our `physics_process(delta)` function to turn off our immunity
-* Add the following code to the `physics_process(delta)` function underneath each of the `if Input.is_action_pressed()` statements
-```
-Globals.immune = false
-```
-* It should look something like this
-```
-if Input.is_action_pressed("rotate_left"):
-	rotation += -1 * rotateSpeed * delta
-	Globals.immune = false                                                 // New
-if Input.is_action_pressed("rotate_right"):
-	rotation += 1 * rotateSpeed * delta
-	Globals.immune = false                                                 // New
-	
-if Input.is_action_pressed("thrust"):
-	velocity += ((Vector2(0, -1) * thrust * delta).rotated(rotation))
-	Globals.immune = false                                                 // New
-else:
-	velocity = lerp(velocity, Vector2.ZERO, slowDown * delta)
-	if velocity.length() >= -10 && velocity.length() <= 10:
-		velocity = Vector2.ZERO
-		
-move_and_collide(velocity * delta)
-```
 * Now we will add the following code to the `physics_process(delta)` function
 ```
-if Input.is_action_pressed("shoot") && Globals.immune == false:
+if Input.is_action_pressed("shoot"):
     var bulletInstance = BULLET.instantiate()  # Create a new instance of the Bullet scene
     get_parent().add_child(bulletInstance)  # Add it to the player node or a designated parent node for bullets
     bulletInstance.global_position = global_position  # Set the bullet's position
@@ -492,7 +467,7 @@ if Input.is_action_pressed("shoot") && Globals.immune == false:
 * This is way to fast so we will add some code to our shoot code we just wrote
 * Update your code to look like this
 ```
-if Input.is_action_pressed("shoot") && Globals.immune == false && shoot_timer.time_left == 0:  # Use action_just_pressed to prevent multiple bullets on a single press
+if Input.is_action_pressed("shoot") && shoot_timer.time_left == 0:
     var bulletInstance = BULLET.instantiate()  # Create a new instance of the Bullet scene
     get_parent().add_child(bulletInstance)  # Add it to the player node or a designated parent node for bullets
     bulletInstance.global_position = global_position  # Set the bullet's position
@@ -863,10 +838,8 @@ var using_mouse = false
 if Input.is_action_pressed("rotate_left"):
 	rotation += -1 * rotateSpeed * delta
 	using_mouse = false                                                                                    // New
-	immune = false
 if Input.is_action_pressed("rotate_right"):
 	using_mouse = false                                                                                    // New
-	immune = false
 	rotation += 1 * rotateSpeed * delta
 if Input.is_mouse_button_pressed(MOUSE_BUTTON_LEFT) || Input.is_mouse_button_pressed(MOUSE_BUTTON_RIGHT):  // New
 	using_mouse = true                                                                                     // New
@@ -874,7 +847,6 @@ if using_mouse:                                                                 
 	rotate(get_angle_to(get_global_mouse_position()) + (0.5 * PI))                                         // New
 if Input.is_action_pressed("thrust"):
 	velocity += ((Vector2(0, -1) * thrust * delta).rotated(rotation))
-	immune = false
 else:
 	velocity = lerp(velocity, Vector2.ZERO, slowDown * delta)
 	if velocity.y >= -1 && velocity.y <= 1:
